@@ -16,7 +16,6 @@ Open the terminal and run the following commands:
 
 ```sh
 $ cd Peculium
-$ npm install
 $ truffle migrate
 ```
 
