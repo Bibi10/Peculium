@@ -35,3 +35,11 @@ $ truffle console
 ```sh
 truffle> migrate
 ```
+
+ ## Deploy on network Ropsten
+ 1. Go to contract folder
+ 2. solc --bin "name_of_the_contract.sol"
+ 3. copy Bytecode from terminal
+ 4. Paste Bytecode on the ethereum wallet with network Ropsten and send the contract creation transaction (you need ropsten ether)
+ 5. wait until the contract is added on the blockchain
+ 6. Communicate with the contract with ABI / JSON.
