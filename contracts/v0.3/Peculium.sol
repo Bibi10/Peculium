@@ -15,22 +15,22 @@ import "./MintableToken.sol";
 
 pragma solidity ^0.4.8;
 
-contract Peculium is MintableToken{
+contract Peculium is MintableToken {
 
     /* Public variables of the token */
 string public name = "Peculium"; //token name 
     	string public symbol = "PCL";
     	uint256 public decimals = 8;
 
-	uint public NB_TOKEN = 20000000000; // number of token to create
-        int256 public constant MAX_SUPPLY_NBTOKEN   = NB_TOKEN*10** decimals;
+	uint256 public NB_TOKEN = 20000000000; // number of token to create
+        uint256 public constant MAX_SUPPLY_NBTOKEN   = NB_TOKEN*10** decimals;
 	// uint256 public constant START_ICO_TIMESTAMP   = 1501595111;
 	uint256 public START_ICO_TIMESTAMP   = 1501595111; // not constant for testing 	(overwritten in the constructor) // Non constant pour les tests (reecrit dans le contructeur)
-	uint public constant DEFROST_PERIOD           = 6; // month in minutes  (1month = 43200 min) // mois en minutes (1 mois = 43200 minutes)
-	uint public constant DEFROST_MONTHLY_PERCENT_OWNER  = 25 ; // 25% per month is automaticaly defrosted // 5% sont automatiquement dégeler
-	uint public constant DEFROST_INITIAL_PERCENT_OWNER  = 10 ; // 90% locked // 90% bloqués
-	uint public constant DEFROST_MONTHLY_PERCENT  = 10 ; // 10% per month is automaticaly defrosted //  10% par mois sont automatiquement dégeler
-	uint public constant DEFROST_INITIAL_PERCENT = 25 ; // 75% locked // 75% bloqué
+	uint256 public constant DEFROST_PERIOD           = 6; // month in minutes  (1month = 43200 min) // mois en minutes (1 mois = 43200 minutes)
+	uint256 public constant DEFROST_MONTHLY_PERCENT_OWNER  = 25 ; // 25% per month is automaticaly defrosted // 5% sont automatiquement dégeler
+	uint256 public constant DEFROST_INITIAL_PERCENT_OWNER  = 10 ; // 90% locked // 90% bloqués
+	uint256 public constant DEFROST_MONTHLY_PERCENT  = 10 ; // 10% per month is automaticaly defrosted //  10% par mois sont automatiquement dégeler
+	uint256 public constant DEFROST_INITIAL_PERCENT = 25 ; // 75% locked // 75% bloqué
 	using SafeMath for uint256;
 	//mapping(address => uint256) balances;
 
@@ -77,7 +77,7 @@ string public name = "Peculium"; //token name
     }
 
 //fonction qui change le montant du bonus a modifier  pour que se soit automatique en fonction du temps pour que ca colle au white paper
-	function setBonus(_bonus_Percent) onlyOwner{
+	function setBonus(uint256 _bonus_Percent) onlyOwner{
              bonus_Percent=_bonus_Percent;
 	}
 
