@@ -6,8 +6,7 @@ contract Peculium is StandardToken,Ownable {
 string public name = "PeculiumToken"; //token name 
 string public constant symbol    = "PCL";
 uint256 public constant decimals = 8;
-
-uint public INITIAL_SUPPLY = 20 000 000 000; /* number of token to create : (mohamed: j'ai changé le nombre pour mettre 20 milliard) */
+uint public INITIAL_SUPPLY = 20 000 000 000;
 using SafeMath for uint256;
 mapping(address => uint256) balances;
 
