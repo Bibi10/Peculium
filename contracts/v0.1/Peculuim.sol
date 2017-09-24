@@ -20,7 +20,7 @@ mapping(address => uint256) balances;
   modifier canMint() { // modifie la fonction canMint.
     require(!mintingFinished);
     _;
-
+}
 
 function PeculiumToken() {// constructor initialisation 
 totalSupply = INITIAL_SUPPLY;
