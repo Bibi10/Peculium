@@ -22,7 +22,7 @@ string public name = "Peculium"; //token name
     	string public symbol = "PCL";
     	uint256 public decimals = 8;
 
-	uint public NB_TOKEN = 200000000000; // number of token to create
+	uint public NB_TOKEN = 20000000000; // number of token to create
         int256 public constant MAX_SUPPLY_NBTOKEN   = NB_TOKEN*10** decimals;
 	// uint256 public constant START_ICO_TIMESTAMP   = 1501595111;
 	uint256 public START_ICO_TIMESTAMP   = 1501595111; // not constant for testing 	(overwritten in the constructor) // Non constant pour les tests (reecrit dans le contructeur)
