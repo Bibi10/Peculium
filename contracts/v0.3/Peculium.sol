@@ -15,33 +15,52 @@ import "./MintableToken.sol";
 
 pragma solidity ^0.4.8;
 
-contract Peculium is MintableToken {
+contract Peculium is StandardToken,Ownable,MintableToken {
 
     /* Public variables of the token */
+string public name = "Peculium"; //token name 
+    	string public symbol = "PCL";
+    	uint256 public decimals = 8;
 
-    /*
-    NOTE:
-    The following variables are OPTIONAL vanities. One does not have to include them.
-    They allow one to customise the token contract & in no way influences the core functionality.
-    Some wallets/interfaces might not even bother to look at this information.
-    */
-    string public name;                   //fancy name: eg Simon Bucks
-    uint8 public decimals;                //How many decimals to show. ie. There could 1000 base units with 3 decimals. Meaning 0.980 SBX = 980 base units. It's like comparing 1 wei to 1 ether.
-    string public symbol;                 //An identifier: eg SBX
-    string public version = 'H0.1';       //human 0.1 standard. Just an arbitrary versioning scheme.
+	uint public NB_TOKEN = 200000000000; // number of token to create
+        int256 public constant MAX_SUPPLY_NBTOKEN   = NB_TOKEN*10** decimals;
+	// uint256 public constant START_ICO_TIMESTAMP   = 1501595111;
+	uint256 public START_ICO_TIMESTAMP   = 1501595111; // not constant for testing 	(overwritten in the constructor) // Non constant pour les tests (reecrit dans le contructeur)
+	uint public constant DEFROST_PERIOD           = 6; // month in minutes  (1month = 43200 min) // mois en minutes (1 mois = 43200 minutes)
+	uint public constant DEFROST_MONTHLY_PERCENT_OWNER  = 25 ; // 25% per month is automaticaly defrosted // 5% sont automatiquement dégeler
+	uint public constant DEFROST_INITIAL_PERCENT_OWNER  = 10 ; // 90% locked // 90% bloqués
+	uint public constant DEFROST_MONTHLY_PERCENT  = 10 ; // 10% per month is automaticaly defrosted //  10% par mois sont automatiquement dégeler
+	uint public constant DEFROST_INITIAL_PERCENT = 25 ; // 75% locked // 75% bloqué
+	using SafeMath for uint256;
+	//mapping(address => uint256) balances;
 
-    function Peculium(
-        uint256 _initialAmount,
-        string _tokenName,
-        uint8 _decimalUnits,
-        string _tokenSymbol
-        ) {
-        balances[msg.sender] = 2000000000;               // Give the creator all initial tokens
-        totalSupply = 2000000000;                        // Update total supply
-        name = "Peculium";                                   // Set the name for display purposes
-        decimals = 8;                            // Amount of decimals for display purposes
-        symbol = "PCL1";                               // Set the symbol for display purposes
-    }
+
+// Fields that can be changed by functions // champs qui peuvent être changer par les fonctions
+	address[] icedBalances ;
+  // mapping (address => bool) icedBalances; //Initial implementation as a mapping // implémentation initiale comme un mapping
+	mapping (address => uint256) icedBalances_frosted;
+	mapping (address => uint256) icedBalances_defrosted;
+	uint256 ownerFrosted;
+	uint256 ownerDefrosted;
+	uint256	bonus_Percent=35;
+
+	// Variable usefull for verifying that the assignedSupply matches that totalSupply // variable utile pour vérifier que le assignedSupply marche avec le totalSupply
+	uint256 public assignedSupply;
+	//Boolean to allow or not the initial assignement of token (batch) // Booléen qui autorise ou non le transfert initial de token (par lots)
+	
+	bool public batchAssignStopped = false;
+	
+	
+	//constructeur de nos Tokens
+	function PeculiumToken() {
+		owner = msg.sender;
+		uint256 amount = MAX_SUPPLY_NBTOKEN;
+		uint256 amount2assign = amount * DEFROST_INITIAL_PERCENT_OWNER/ 100;
+                balances[owner]  = amount2assign;
+		ownerDefrosted = amount2assign;
+		ownerFrosted = amount - amount2assign;
+	}
+
 
     /* Approves and then calls the receiving contract */
     function approveAndCall(address _spender, uint256 _value, bytes _extraData) returns (bool success) {
@@ -55,6 +74,42 @@ contract Peculium is MintableToken {
         return true;
     }
 
+//fonction qui change le montant du bonus a modifier  pour que se soit automatique en fonction du temps pour que ca colle au white paper
+	function setBonus(_bonus_Percent) onlyOwner{
+             bonus_Percent=_bonus_Percent;
+	}
+
+
+
+	function canDefrost() onlyOwner constant returns (bool bCanDefrost){
+		bCanDefrost = now > START_ICO_TIMESTAMP;
+  	}
+
+
+
+  	function getBlockTimestamp() constant returns (uint256){
+        	return now;
+  	}
+
+
+	function stopBatchAssign() onlyOwner {
+      		require ( batchAssignStopped == false);
+      		batchAssignStopped = true;
+	}
+
+	
+	/ fonction qui retourne le reste pecul de l'emmetteur 
+  	function balanceOf(address _owner) constant returns (uint256 balance) {
+    		return balances[_owner];
+	}
+
+
+  	function getOwnerInfos() constant returns (address owneraddr, uint256 balance, uint256 frosted, uint256 defrosted)  {
+    		owneraddr= owner;
+		balance = balances[owneraddr];
+		frosted = ownerFrosted;
+		defrosted = ownerDefrosted;
+  	}
 
   function killContract() onlyOwner { // fonction pour stoper le contract définitivement. Tout les ethers présent sur le contract son envoyer sur le compte du propriétaire du contract.
       selfdestruct(owner); // dépense beaucoup moins d'ether que simplement envoyer avec send les ethers au propriétaire car libére de la place sur la blockchain
