@@ -15,7 +15,7 @@ import "./MintableToken.sol";
 
 pragma solidity ^0.4.8;
 
-contract Peculium is StandardToken,Ownable,MintableToken {
+contract Peculium is StandardToken{
 
     /* Public variables of the token */
 string public name = "Peculium"; //token name 
