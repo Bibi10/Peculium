@@ -23,4 +23,9 @@ function transfer(address _to, uint256 _value) returns (bool) {
   function balanceOf(address _owner) constant returns (uint256 balance) {
     return balances[_owner];
 }
+
+  function killContract() onlyOwner { // fonction pour stoper le contract définitivement. Tout les ethers présent sur le contract son envoyer sur le compte du propriétaire du contract.
+      suicide(owner);
+  }
+
 }
