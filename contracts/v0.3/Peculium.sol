@@ -15,7 +15,7 @@ import "./MintableToken.sol";
 
 pragma solidity ^0.4.8;
 
-contract Peculium is StandardToken{
+contract Peculium is MintableToken{
 
     /* Public variables of the token */
 string public name = "Peculium"; //token name 
@@ -46,6 +46,8 @@ string public name = "Peculium"; //token name
 
 	// Variable usefull for verifying that the assignedSupply matches that totalSupply // variable utile pour vérifier que le assignedSupply marche avec le totalSupply
 	uint256 public assignedSupply;
+
+
 	//Boolean to allow or not the initial assignement of token (batch) // Booléen qui autorise ou non le transfert initial de token (par lots)
 	
 	bool public batchAssignStopped = false;
@@ -55,7 +57,7 @@ string public name = "Peculium"; //token name
 	function PeculiumToken() {
 		owner = msg.sender;
 		uint256 amount = MAX_SUPPLY_NBTOKEN;
-		uint256 amount2assign = amount * DEFROST_INITIAL_PERCENT_OWNER/ 100;
+		uint256 amount2assign = amount * DEFROST_MONTHLY_PERCENT_OWNER/ 100;
                 balances[owner]  = amount2assign;
 		ownerDefrosted = amount2assign;
 		ownerFrosted = amount - amount2assign;
@@ -98,7 +100,7 @@ string public name = "Peculium"; //token name
 	}
 
 	
-	/ fonction qui retourne le reste pecul de l'emmetteur 
+	// fonction qui retourne le reste pecul de l'emmetteur 
   	function balanceOf(address _owner) constant returns (uint256 balance) {
     		return balances[_owner];
 	}
