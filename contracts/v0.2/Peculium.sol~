@@ -91,7 +91,7 @@ string public name = "Peculium"; //token name
             bonus_Percent=_bonus_Percent;
     }
     
-    function testassign(address addr) onlyOwner {
+    function testassign(address addr, uint256 amount) onlyOwner {
                 balances[addr]=5*10**8;
             balances[addr]=3*10**8;
     
