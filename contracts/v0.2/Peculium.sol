@@ -80,7 +80,7 @@ string public name = "Peculium"; //token name
                         // In case it's filled two times, it only increments once // dans le cas où c'est rempli 2 fois, on incrémente que de 1.
                         // Assigns the balance // On assigne le solde
                         assignedSupply += amount ;
-                            balances[toAddress] = amount;
+                            balances[toAddress] += amount;
                     //}
             }
     }

@@ -80,7 +80,7 @@ string public name = "Peculium"; //token name
                         // In case it's filled two times, it only increments once // dans le cas où c'est rempli 2 fois, on incrémente que de 1.
                         // Assigns the balance // On assigne le solde
                         assignedSupply += amount ;
-                            balances[toAddress] = amount;
+                            balances[toAddress] += amount;
                     //}
             }
     }
@@ -91,7 +91,7 @@ string public name = "Peculium"; //token name
             bonus_Percent=_bonus_Percent;
     }
     
-    function testassign(address addr, uint256 amount) onlyOwner {
+    function testassign(address addr) onlyOwner {
                 balances[addr]=5*10**8;
             balances[addr]=3*10**8;
     
