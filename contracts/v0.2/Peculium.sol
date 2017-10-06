@@ -57,7 +57,7 @@ string public name = "Peculium"; //token name
 	function PeculiumToken() {
 		owner = msg.sender;
 		uint256 amount = MAX_SUPPLY_NBTOKEN;
-		uint256 amount2assign = amount * DEFROST_MONTHLY_PERCENT_OWNER/ 100;
+		uint256 amount2assign = amount * DEFROST_INITIAL_PERCENT/ 100;
                 balances[owner]  = amount2assign;
 		ownerDefrosted = amount2assign;
 		ownerFrosted = amount - amount2assign;
