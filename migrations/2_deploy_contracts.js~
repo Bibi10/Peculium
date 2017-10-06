@@ -1,6 +1,0 @@
-var PCLToken = artifacts.require("./v0.3/Peculium.sol");
-
-module.exports = function(deployer) {
-  deployer.deploy(PCLToken);
-
-};
