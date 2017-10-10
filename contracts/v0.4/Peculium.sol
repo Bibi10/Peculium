@@ -97,12 +97,9 @@ string public name = "Peculium"; //token name
 			   for (uint index=0; index<_vaddr.length; index++) {
                      address toAddress = _vaddr[index];
                      uint amount = _vamounts[index] * 10 ** decimals;
-                     //if (balances[toAddress] == 0) {
-                        // In case it's filled two times, it only increments once // dans le cas où c'est rempli 2 fois, on incrémente que de 1.
-                        // Assigns the balance // On assigne le solde
-                        
+                     
                             balances[toAddress] += amount;
-                    //}
+                    
             		  }
 			
 		}
