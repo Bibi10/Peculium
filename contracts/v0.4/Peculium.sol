@@ -23,8 +23,7 @@ string public name = "Peculium"; //token name
     	uint256 public decimals = 8;
 
 	uint256 public NB_TOKEN = 20000000000; // number of token to create
-	unint256 public constant MAX_BOUNTY_MANAGER_TOKEN = 7200000; 
-	unint256 public constant MONTHLY_SEND_BOUNTY_MANAGER = 20;
+	uint256 public constant MONTHLY_SEND_BOUNTY_MANAGER = 20;
         uint256 public constant MAX_SUPPLY_NBTOKEN   = NB_TOKEN*10** decimals;
         
 	
@@ -148,7 +147,7 @@ string public name = "Peculium"; //token name
     }
 	address bountyholder = Ox1; // public key of the bounty holder 
 	
-	function change_bounty_holder onlyOwner(address public_key){ // to change the bounty holder
+	function change_bounty_holder (address public_key) onlyOwner{ // to change the bounty holder
 		bountyholder = public_key;
 	}
 	
@@ -174,55 +173,7 @@ string public name = "Peculium"; //token name
         require(_spender.call(bytes4(bytes32(sha3("receiveApproval(address,uint256,address,bytes)"))), msg.sender, _value, this, _extraData));
         return true;
     }
-	/*
-	bool public previous_now = START_DATE_ICO; // change start for test
-	
-	bool AddMoney = true;
-	bool AddMoney2 = false;
-	function add_money() onlyOwner {
-		if(AddMoney = true && balance[owner] == 0){
-			balance[owner] += 1400000000*10^decimals // we add 1400 millions token.
-			redestribute(600000000*10^decimals) // we redestribute 600 millions token to the buyers.
-		
-		}
-	AddMoney = false;
-	AddMoney2 = true;
-	
-	}
-		function add_money() onlyOwner {
-		if(AddMoney2 = true && balance[owner] == 0){
-			balance[owner] += 6300000000*10^decimals // we add 6300 millions token.
-			redestribute(2700000000*10^decimals) // we redestribute 2700 millions token to the buyers.
-		
-		}
-	AddMoney2 = false;
-	
-	}
-	bountyholder = public_key_bounty; // public key of the bounty holder 
-	
-	function change_bounty_holder onlyOwner(public_key){ // to changer the bounty holder
-		bountyholder = public_key;
-	}
-	
-	
-	function payBounty() { // to pay the bountyholder
-		if(msg.sender==bountyholder && now > previous_now){ 
-			send(msg.sender, 10*bountymoney/100); // send montly money to the bounty holder
-			previous_now = previous_now + 30; // Can only be called once a month		
-		}
-	
-	
-	}
 
-	*/   
-	/*
-
- 	function our team Payement after ICO ENDS 
-	There are 7 payemnts
-	January 40% of Teamshare
-        February until July 10% of team Share each month will be given to our team.
-
-	*/
 	function teamPayment(address teamaddr) onlyOwner{
 		if(now>dateOfPayment_TimeStamp && now< END_PAYMENTE_TIMESTAMP){
 		    uint256 wages=teamShare*10/100;
