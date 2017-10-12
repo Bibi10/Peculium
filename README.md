@@ -33,8 +33,8 @@ $ truffle console
 ```
 2. Inside truffle console, invoke "compile" command to deploy contracts:
 ```sh
-$ truffle> compile
-$ truffle> migrate
+$ truffle(development)> compile
+$ truffle(development)> migrate
 $ truffle(development)>Peculium.deployed().then(function(instance){PCL=instance})
 $ truffle(development)> PCL.owner()
  result:'0x66693d57ccc352204f3f8579e3fac774be08884b'
@@ -47,4 +47,4 @@ $ truffle(development)> PCL.balanceOf('0x66693d57ccc352204f3f8579e3fac774be08884
  3. copy Bytecode from terminal
  4. Paste Bytecode on the ethereum wallet with network Ropsten and send the contract creation transaction (you need ropsten ether)
  5. wait until the contract is added on the blockchain
- 6. Communicate with the contract with ABI / JSON.
+ 6. Communicate with the contract with API / JSON.
