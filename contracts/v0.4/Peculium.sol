@@ -18,7 +18,7 @@ string public name = "Peculium"; // token name
 	uint256 public constant MAX_SUPPLY_AirdropsToken = AirdropsToken*10** decimals;
         uint256 public constant MAX_SUPPLY_NBTOKEN   = NB_TOKEN*10** decimals;
 	unint256 public constant MAX_BOUNTY_MANAGER_TOKEN = 7200000; 
-
+	unint256 public constant MONTHLY_SEND_BOUNTY_MANAGER = 20;
 	uint256 public START_ICO_TIMESTAMP   =1509494400; //start date of ICO 
 	uint256 public END_ICO_TIMESTAMP   =1514764800; //end date of ICO 
 	unit256 public constant THREE_HOURS_TIMESTAMP=10800;// month in minutes  (1month = 43200 min) 
@@ -45,6 +45,7 @@ string public name = "Peculium"; // token name
 		owner = msg.sender;
 		uint256 amount = MAX_SUPPLY_NBTOKEN;
 		uint256 Airdropsamount = AirdropsToken;
+		uint256 bountymanagertoken = MAX_BOUNTY_MANAGER_TOKEN;
 		uint256 amount2assign = amount * INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN/ 100;
                 balances[owner]  = amount2assign;
 		ownerDefrosted = amount2assign;
@@ -153,8 +154,8 @@ string public name = "Peculium"; // token name
 	
 	function payBounty() { // to pay the bountyholder
 		if(msg.sender==bountyholder && now > previous_now){ 
-			balances[owner] -=5000000;
-			balances[msg.sender] +=5000000;
+			bountymanagertoken -=MONTHLY_SEND_BOUNTY_MANAGER * bountymanagertoken/100;
+			balances[msg.sender] +=MONTHLY_SEND_BOUNTY_MANAGER * bountymanagertoken/100;
 			previous_now = previous_now + 30; // Can only be called once a month		
 		}
 	
