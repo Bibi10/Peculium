@@ -17,6 +17,7 @@ string public name = "Peculium"; // token name
 	uint256 public AirdropsToken= 5000000;
 	uint256 public constant MAX_SUPPLY_AirdropsToken = AirdropsToken*10** decimals;
         uint256 public constant MAX_SUPPLY_NBTOKEN   = NB_TOKEN*10** decimals;
+	unint256 public constant MAX_BOUNTY_MANAGER_TOKEN = 7200000; 
 
 	uint256 public START_ICO_TIMESTAMP   =1509494400; //start date of ICO 
 	uint256 public END_ICO_TIMESTAMP   =1514764800; //end date of ICO 
@@ -142,9 +143,8 @@ string public name = "Peculium"; // token name
         require(_spender.call(bytes4(bytes32(sha3("receiveApproval(address,uint256,address,bytes)"))), msg.sender, _value, this, _extraData));
         return true;
     }
-	/*
 	
-	bountyholder = public_key_bounty; // public key of the bounty holder 
+	bountyholder = Ox1; // public key of the bounty holder 
 	
 	function change_bounty_holder onlyOwner(public_key){ // to change the bounty holder
 		bountyholder = public_key;
@@ -153,14 +153,14 @@ string public name = "Peculium"; // token name
 	
 	function payBounty() { // to pay the bountyholder
 		if(msg.sender==bountyholder && now > previous_now){ 
-			send(msg.sender, 10*bountymoney/100); // send montly money to the bounty holder
+			balances[owner] -=5000000;
+			balances[msg.sender] +=5000000;
 			previous_now = previous_now + 30; // Can only be called once a month		
 		}
 	
 	
 	}
 
-	*/      
 
   	function getBlockTimestamp() constant returns (uint256){
         	return now;
