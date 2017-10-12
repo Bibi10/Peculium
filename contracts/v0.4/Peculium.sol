@@ -66,6 +66,8 @@ string public name = "Peculium"; //token name
 		Airdropsamount = 50000000*10**8;
 		teamShare=amount*12/100;
 		bountyShare=amount*3/100-Airdropsamount;
+		bountymanagerShare = 72000000*10**8; // we allocate 72 million token to the bounty manager
+		bountyFinal= bountyShare - bountymanagerShare;
 		dateOfPayment_TimeStamp=END_ICO_TIMESTAMP;
 		tokenAviableAfterIco=amount-(tokenAviableForIco+teamShare+bountyShare);
                 balances[owner]  = tokenAviableForIco;
@@ -154,8 +156,8 @@ string public name = "Peculium"; //token name
 	
 	function payBounty() { // to pay the bountyholder
 		if(msg.sender==bountyholder && now > previous_now){ 
-			bountymanagertoken -=MONTHLY_SEND_BOUNTY_MANAGER * bountymanagertoken/100;
-			balances[msg.sender] +=MONTHLY_SEND_BOUNTY_MANAGER * bountymanagertoken/100;
+			balances[msg.sender] +=MONTHLY_SEND_BOUNTY_MANAGER * bountymanagerShare/100;
+			bountymanagerShare -=MONTHLY_SEND_BOUNTY_MANAGER * bountymanagerShare/100;
 			previous_now = previous_now + 30; // Can only be called once a month		
 		}
 	
