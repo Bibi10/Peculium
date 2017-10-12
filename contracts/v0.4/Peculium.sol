@@ -34,6 +34,8 @@ string public name = "Peculium"; //token name
 
 	uint256 teamShare; //token for the dev team
 	uint256 bountyShare;
+	uint256 bountymanagerShare;
+	uint256 bountyFinal;
 	uint256 tokenAviableForIco; //token to be sold during the preICO and the ICO.
 	uint256 tokenAviableAfterIco;
 	uint256 dateOfPayment_TimeStamp;
@@ -41,18 +43,18 @@ string public name = "Peculium"; //token name
 	uint256 public constant END_PAYMENTE_TIMESTAMP=1533074400;
 	// Variable usefull for verifying that the assignedSupply matches that totalSupply 
 	uint256 public assignedSupply;
-
-
+	uint256 public beginICOdate; 
+	
 	//Boolean to allow or not the initial assignement of token (batch) 
 	
 	bool public batchAssignStopped = false;
 	
-	
+	uint256 amount = MAX_SUPPLY_NBTOKEN;
+		
 	
 	//Constructor
 	function Peculium() {
 		owner = msg.sender;
-		uint256 amount = MAX_SUPPLY_NBTOKEN;
 		tokenAviableForIco = amount * INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN/ 100;
 		Airdropsamount = 50000000*10**8;
 		teamShare=amount*12/100;
@@ -62,6 +64,7 @@ string public name = "Peculium"; //token name
 		dateOfPayment_TimeStamp=END_ICO_TIMESTAMP;
 		tokenAviableAfterIco=amount-(tokenAviableForIco+teamShare+bountyShare);
                 balances[owner]  = tokenAviableForIco;
+                beginICOdate = now; // change for tests
 	}
 
 	function buyTokenPreIco(address toAddress, uint256 _vamounts) onlyOwner {
@@ -69,17 +72,17 @@ string public name = "Peculium"; //token name
 	    if (START_PRE_ICO_TIMESTAMP <=now && now <= (START_PRE_ICO_TIMESTAMP + THREE_HOURS_TIMESTAMP)){   
                  
                      
-                     uint256 amount = _vamounts*10**decimals *(1+BONNUS_FIRST_THREE_HOURS_PRE_ICO/100);
+                     uint256 amountTo_Send = _vamounts*10**decimals *(1+BONNUS_FIRST_THREE_HOURS_PRE_ICO/100);
                      
-                            balances[toAddress] += amount;
+                            balances[toAddress] += amountTo_Send;
                     
             }
 	     if (START_PRE_ICO_TIMESTAMP+ THREE_HOURS_TIMESTAMP <=now && now <= (START_PRE_ICO_TIMESTAMP + 10* 1 days)){   
                  
                      
-                     uint256 amount = _vamounts*10**decimals *(1+BONNUS_FIRST_TEN_DAYS_PRE_ICO/100);
+                      amountTo_Send = _vamounts*10**decimals *(1+BONNUS_FIRST_TEN_DAYS_PRE_ICO/100);
                      
-                            balances[toAddress] += amount;
+                            balances[toAddress] += amountTo_Send;
                     
             }
 	}
@@ -88,44 +91,44 @@ string public name = "Peculium"; //token name
 	 if ((START_ICO_TIMESTAMP) < now && now <= (START_ICO_TIMESTAMP + 2*WEEK_TIMESTAMP) ){
                  
                      
-                     	    amount = _vamounts* 10**decimals *(1+BONNUS_FIRST_TWO_WEEKS_ICO/100);
+                     	    uint256 amountTo_Send = _vamounts* 10**decimals *(1+BONNUS_FIRST_TWO_WEEKS_ICO/100);
                      
                        
-                            balances[toAddress] += amount;
+                            balances[toAddress] += amountTo_Send;
                     
             }
  	if ((START_ICO_TIMESTAMP+ 2*WEEK_TIMESTAMP) < now && now <= (START_ICO_TIMESTAMP + 5*WEEK_TIMESTAMP) ){
 		
                      
-                     	    amount = _vamounts*10**decimals *(1+BONNUS_AFTER_TWO_WEEKS/100);
+                     	     amountTo_Send = _vamounts*10**decimals *(1+BONNUS_AFTER_TWO_WEEKS_ICO/100);
                      
                        
-                            balances[toAddress] += amount;
+                            balances[toAddress] += amountTo_Send;
                     
             }
 	if ((START_ICO_TIMESTAMP+ 5*WEEK_TIMESTAMP) < now && now <= (START_ICO_TIMESTAMP + 7*WEEK_TIMESTAMP) ){
 		
                      
-                     	    amount = _vamounts*10**decimals *(1+BONNUS_AFTER_FIVE_WEEKS/100);
+                     	     amountTo_Send = _vamounts*10**decimals *(1+BONNUS_AFTER_FIVE_WEEKS_ICO/100);
                      
                        
-                            balances[toAddress] += amount;
+                            balances[toAddress] += amountTo_Send;
                     
             }
 	if (START_ICO_TIMESTAMP+ 7*WEEK_TIMESTAMP< now){
 		
-                     	    amount = _vamounts*10**decimals *(1+BONNUS_AFTER_SEVEN_WEEKS/100);
+                     	     amountTo_Send = _vamounts*10**decimals *(1+BONNUS_AFTER_SEVEN_WEEKS_ICO/100);
                      
                        
-                            balances[toAddress] += amount;
+                            balances[toAddress] += amountTo_Send;
                     
             }
 	
     }
 	function buyTokenPostIco(address toAddress, uint256 _vamounts) onlyOwner {
             require ( batchAssignStopped == false );      
-                     uint256 amount = _vamounts*10**decimals;
-                            balances[toAddress] += amount;        
+                     uint256 amountTo_Send = _vamounts*10**decimals;
+                            balances[toAddress] += amountTo_Send;        
 	}
 	function airdropsTokens(address[] _vaddr, uint256[] _vamounts) onlyOwner {
             require ( batchAssignStopped == false );
@@ -134,16 +137,16 @@ string public name = "Peculium"; //token name
 		if(now == END_ICO_TIMESTAMP){
 			   for (uint index=0; index<_vaddr.length; index++) {
                      address toAddress = _vaddr[index];
-                     uint amount = _vamounts[index] * 10 ** decimals;
+                     uint amountTo_Send = _vamounts[index] * 10 ** decimals;
                      
-                            balances[toAddress] += amount;
+                            balances[toAddress] += amountTo_Send;
                     
             		  }
 			
 		}
               
     }
-	address bountyholder = Ox1; // public key of the bounty holder 
+	address bountyholder ; // public key of the bounty holder 
 	
 	function change_bounty_holder (address public_key) onlyOwner{ // to change the bounty holder
 		bountyholder = public_key;
@@ -151,10 +154,10 @@ string public name = "Peculium"; //token name
 	
 	
 	function payBounty() { // to pay the bountyholder
-		if(msg.sender==bountyholder && now > previous_now){ 
+		if(msg.sender==bountyholder && now > beginICOdate){ 
 			balances[msg.sender] +=MONTHLY_SEND_BOUNTY_MANAGER * bountymanagerShare/100;
 			bountymanagerShare -=MONTHLY_SEND_BOUNTY_MANAGER * bountymanagerShare/100;
-			previous_now = previous_now + 30; // Can only be called once a month		
+			beginICOdate = beginICOdate + 30; // Can only be called once a month		
 		}
 	
 	
