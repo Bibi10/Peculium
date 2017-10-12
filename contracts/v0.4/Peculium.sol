@@ -26,30 +26,18 @@ string public name = "Peculium"; //token name
 	uint256 public AirdropsToken= 5000000;
 	uint256 public constant MAX_SUPPLY_AirdropsToken= AirdropsToken*10** decimals;
         uint256 public constant MAX_SUPPLY_NBTOKEN   = NB_TOKEN*10** decimals;
-	// uint256 public constant START_ICO_TIMESTAMP   = 1501595111;
-	uint256 public START_ICO_TIMESTAMP   =1509494400; //start date of ICO 1514764800000
+
+	uint256 public START_ICO_TIMESTAMP   =1509494400; //start date of ICO 
 	uint256 public END_ICO_TIMESTAMP   =1514764800; //end date of ICO 
-	unit256 public constant 3_HOURS_TIMESTAMP=10800;
+	unit256 public constant THREE_HOURS_TIMESTAMP=10800;// month in minutes  (1month = 43200 min) // mois en minutes (1 mois = 43200 minutes)
 	unit256 public constant WEEK_TIMESTAMP=604800;
-	uint256 public constant DEFROST_PERIOD           = 6; // month in minutes  (1month = 43200 min) // mois en minutes (1 mois = 43200 minutes)
-	uint256 public constant BONNUS_FIRST_THREE_HOURS = 35 ; // 35% per  // 35% sont 
+	uint256 public constant BONNUS_FIRST_THREE_HOURS = 35 ; // 35% 
 	uint256 public constant BONNUS_FIRST_TWO_WEEKS  = 20 ;
 	uint256 public constant BONNUS_AFTER_TWO_WEEKS  = 15 ; 
 	uint256 public constant BONNUS_AFTER_FIVE_WEEKS = 10 ;
 	uint256 public constant BONNUS_AFTER_SEVEN_WEEKS = 5 ; 
 	uint256 public constant INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN = 25 ; 
 	using SafeMath for uint256;
-	//mapping(address => uint256) balances;
-
-
-// Fields that can be changed by functions // champs qui peuvent être changer par les fonctions
-	address[] icedBalances ;
-  // mapping (address => bool) icedBalances; //Initial implementation as a mapping // implémentation initiale comme un mapping
-	mapping (address => uint256) icedBalances_frosted;
-	mapping (address => uint256) icedBalances_defrosted;
-	uint256 ownerFrosted;
-	uint256 ownerDefrosted;
-	uint256	bonus_Percent=35;
 
 	// Variable usefull for verifying that the assignedSupply matches that totalSupply // variable utile pour vérifier que le assignedSupply marche avec le totalSupply
 	uint256 public assignedSupply;
@@ -80,23 +68,15 @@ string public name = "Peculium"; //token name
 
 	function batchAssignTokens(address _vaddr, uint256 _vamounts) onlyOwner {
             require ( batchAssignStopped == false );
-            require ( _vaddr.length == _vamounts.length );
-	    if (START_ICO_TIMESTAMP<=now && now <= START_ICO_TIMESTAMP + 3_HOURS_TIMESTAMP){
-		
-	    
-           
+	    if (START_ICO_TIMESTAMP <=now && now <= (START_ICO_TIMESTAMP + THREE_HOURS_TIMESTAMP)){   
                  
                      address toAddress = _vaddr;
                      uint amount = _vamounts* 10 ** decimals*(1+BONNUS_FIRST_THREE_HOURS/100);
                      
-                       
                             balances[toAddress] += amount;
                     
             }
-	 if (START_ICO_TIMESTAMP+ 3_HOURS_TIMESTAMP< now && now <= START_ICO_TIMESTAMP + 2*WEEK_TIMESTAMP ){
-		
-	    
-           
+	 if ((START_ICO_TIMESTAMP+ TREE_HOURS_TIMESTAMP) < now && now <= (START_ICO_TIMESTAMP + 2*WEEK_TIMESTAMP) ){
                  
                      address toAddress = _vaddr;
                      uint amount = _vamounts* 10 ** decimals*(1+BONNUS_FIRST_TWO_WEEKS/100);
@@ -105,11 +85,8 @@ string public name = "Peculium"; //token name
                             balances[toAddress] += amount;
                     
             }
- 	if (START_ICO_TIMESTAMP+ 2*WEEK_TIMESTAMP< now && now <= START_ICO_TIMESTAMP + 5*WEEK_TIMESTAMP ){
+ 	if ((START_ICO_TIMESTAMP+ 2*WEEK_TIMESTAMP) < now && now <= (START_ICO_TIMESTAMP + 5*WEEK_TIMESTAMP) ){
 		
-	    
-           
-                 
                      address toAddress = _vaddr;
                      uint amount = _vamounts* 10 ** decimals*(1+BONNUS_AFTER_TWO_WEEKS/100);
                      
@@ -117,11 +94,8 @@ string public name = "Peculium"; //token name
                             balances[toAddress] += amount;
                     
             }
-	if (START_ICO_TIMESTAMP+ 5*WEEK_TIMESTAMP< now && now <= START_ICO_TIMESTAMP + 7*WEEK_TIMESTAMP ){
+	if ((START_ICO_TIMESTAMP+ 5*WEEK_TIMESTAMP) < now && now <= (START_ICO_TIMESTAMP + 7*WEEK_TIMESTAMP) ){
 		
-	    
-           
-                 
                      address toAddress = _vaddr;
                      uint amount = _vamounts* 10 ** decimals*(1+BONNUS_AFTER_FIVE_WEEKS/100);
                      
@@ -160,11 +134,6 @@ string public name = "Peculium"; //token name
               
     }
 
-
-//fonction qui change le montant du bonus a modifier  pour que se soit automatique en fonction du temps pour que ca colle au white paper
-    function setBonus(uint256 _bonus_Percent) onlyOwner{
-            bonus_Percent=_bonus_Percent;
-    }
     
     function testassign(address addr) onlyOwner {
                 balances[addr]=5*10**8;
@@ -223,13 +192,7 @@ string public name = "Peculium"; //token name
 	
 	}
 
-	*/
-
-	function canDefrost() onlyOwner constant returns (bool bCanDefrost){
-		bCanDefrost = now > START_ICO_TIMESTAMP;
-  	}
-
-         
+	*/      
 
   	function getBlockTimestamp() constant returns (uint256){
         	return now;
