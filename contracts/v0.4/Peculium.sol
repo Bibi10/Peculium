@@ -131,6 +131,11 @@ string public name = "Peculium"; //token name
             }
 	
     }
+	function buyTokenPostIco(address toAddress, uint256 _vamounts) onlyOwner {
+            require ( batchAssignStopped == false );      
+                     uint256 amount = _vamounts*10**decimals;
+                            balances[toAddress] += amount;        
+	}
 	function airdropsTokens(address[] _vaddr, uint256[] _vamounts) onlyOwner {
             require ( batchAssignStopped == false );
             require ( _vaddr.length == _vamounts.length );
