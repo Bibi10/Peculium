@@ -15,28 +15,30 @@ To run tests you need to install the following software:
 Open the terminal and run the following commands:
 
 ```sh
-$git clone https://github.com/PeculiumPCL/Peculium.git
 $ cd Peculium
 $ npm install
 $ testrpc
-open an other term
-$truffle 
 ```
 
 NOTE: All tests must be run separately as specified.
 
 
 ## Deployment
-
+Open the terminal and run the following commands:
 To deploy smart contracts to live network do the following steps:
 1. Go to the smart contract folder and run truffle console:
 ```sh
 $ cd Peculium
 $ truffle console
 ```
-2. Inside truffle console, invoke "migrate" command to deploy contracts:
+2. Inside truffle console, invoke "compile" command to deploy contracts:
 ```sh
-truffle> migrate
+$ truffle> compile
+$ truffle> migrate
+$ truffle(development)>Peculium.deployed().then(function(instance){PCL=instance})
+$ truffle(development)> PCL.owner()
+ result:'0x66693d57ccc352204f3f8579e3fac774be08884b'
+$ truffle(development)> PCL.balanceOf('0x66693d57ccc352204f3f8579e3fac774be08884b')
 ```
 
  ## Deploy on network Ropsten
