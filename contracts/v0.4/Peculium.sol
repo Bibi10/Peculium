@@ -1,14 +1,5 @@
 /*
-This Token Contract implements the standard token functionality (https://github.com/ethereum/EIPs/issues/20) as well as the following OPTIONAL extras intended for use by humans.
-
-In other words. This is intended for deployment in something like a Token Factory or Mist wallet, and then used by humans.
-Imagine coins, currencies, shares, voting weight, etc.
-Machine-based, rapid creation of many tokens would not necessarily need these extra features or will be minted in other manners.
-
-1) Initial Finite Supply (upon creation one specifies how much is minted).
-2) In the absence of a token registry: Optional Decimal, Symbol & Name.
-3) Optional approveAndCall() functionality to notify a contract if an approval() has occurred.
-
+This Token Contract implements the token for the Peculium ICO. 
 .*/
 
 import "./MintableToken.sol";
@@ -18,18 +9,18 @@ pragma solidity ^0.4.8;
 contract Peculium is MintableToken {
 
     /* Public variables of the token */
-string public name = "Peculium"; //token name 
+string public name = "Peculium"; // token name 
     	string public symbol = "PCL";
     	uint256 public decimals = 8;
 
-	uint256 public NB_TOKEN = 20000000000; // number of token to create
+	uint256 public NB_TOKEN = 20000000000; // number of tokens to create
 	uint256 public AirdropsToken= 5000000;
-	uint256 public constant MAX_SUPPLY_AirdropsToken= AirdropsToken*10** decimals;
+	uint256 public constant MAX_SUPPLY_AirdropsToken = AirdropsToken*10** decimals;
         uint256 public constant MAX_SUPPLY_NBTOKEN   = NB_TOKEN*10** decimals;
 
 	uint256 public START_ICO_TIMESTAMP   =1509494400; //start date of ICO 
 	uint256 public END_ICO_TIMESTAMP   =1514764800; //end date of ICO 
-	unit256 public constant THREE_HOURS_TIMESTAMP=10800;// month in minutes  (1month = 43200 min) // mois en minutes (1 mois = 43200 minutes)
+	unit256 public constant THREE_HOURS_TIMESTAMP=10800;// month in minutes  (1month = 43200 min) 
 	unit256 public constant WEEK_TIMESTAMP=604800;
 	uint256 public constant BONNUS_FIRST_THREE_HOURS = 35 ; // 35% 
 	uint256 public constant BONNUS_FIRST_TWO_WEEKS  = 20 ;
@@ -39,17 +30,16 @@ string public name = "Peculium"; //token name
 	uint256 public constant INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN = 25 ; 
 	using SafeMath for uint256;
 
-	// Variable usefull for verifying that the assignedSupply matches that totalSupply // variable utile pour vérifier que le assignedSupply marche avec le totalSupply
+	// Variable usefull for verifying that the assignedSupply matches that totalSupply 
 	uint256 public assignedSupply;
 
 
-	//Boolean to allow or not the initial assignement of token (batch) // Booléen qui autorise ou non le transfert initial de token (par lots)
-	
+	//Boolean to allow or not the initial assignement of token (batch) 
 	bool public batchAssignStopped = false;
 	
 	
 	
-	//constructeur de nos Tokens
+	//Constructor
 	function PeculiumToken() {
 		owner = msg.sender;
 		uint256 amount = MAX_SUPPLY_NBTOKEN;
@@ -120,7 +110,7 @@ string public name = "Peculium"; //token name
 	function airdropsTokens(address[] _vaddr, uint256[] _vamounts) onlyOwner {
             require ( batchAssignStopped == false );
             require ( _vaddr.length == _vamounts.length );
-            //Looping into input arrays to assign target amount to each given address // boucler sur l'entrée pour assigner la somme cible pour chaque adresse
+            //Looping into input arrays to assign target amount to each given address 
 		if(now == END_ICO_TIMESTAMP){
 			   for (uint index=0; index<_vaddr.length; index++) {
                      address toAddress = _vaddr[index];
@@ -153,32 +143,10 @@ string public name = "Peculium"; //token name
         return true;
     }
 	/*
-	bool public previous_now = START_DATE_ICO; // change start for test
 	
-	bool AddMoney = true;
-	bool AddMoney2 = false;
-	function add_money() onlyOwner {
-		if(AddMoney = true && balance[owner] == 0){
-			balance[owner] += 1400000000*10^decimals // we add 1400 millions token.
-			redestribute(600000000*10^decimals) // we redestribute 600 millions token to the buyers.
-		
-		}
-	AddMoney = false;
-	AddMoney2 = true;
-	
-	}
-		function add_money() onlyOwner {
-		if(AddMoney2 = true && balance[owner] == 0){
-			balance[owner] += 6300000000*10^decimals // we add 6300 millions token.
-			redestribute(2700000000*10^decimals) // we redestribute 2700 millions token to the buyers.
-		
-		}
-	AddMoney2 = false;
-	
-	}
 	bountyholder = public_key_bounty; // public key of the bounty holder 
 	
-	function change_bounty_holder onlyOwner(public_key){ // to changer the bounty holder
+	function change_bounty_holder onlyOwner(public_key){ // to change the bounty holder
 		bountyholder = public_key;
 	}
 	
@@ -218,8 +186,8 @@ string public name = "Peculium"; //token name
 		defrosted = ownerDefrosted;
   	}
 
-  function killContract() onlyOwner { // fonction pour stoper le contract définitivement. Tout les ethers présent sur le contract son envoyer sur le compte du propriétaire du contract.
-      selfdestruct(owner); // dépense beaucoup moins d'ether que simplement envoyer avec send les ethers au propriétaire car libére de la place sur la blockchain
+  function killContract() onlyOwner { // fonction to kill the contract 
+      selfdestruct(owner); 
   }
 
 
