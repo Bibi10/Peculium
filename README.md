@@ -15,9 +15,12 @@ To run tests you need to install the following software:
 Open the terminal and run the following commands:
 
 ```sh
+$git clone https://github.com/PeculiumPCL/Peculium.git
 $ cd Peculium
 $ npm install
-$ truffle migrate
+$ testrpc
+open an other term
+$truffle 
 ```
 
 NOTE: All tests must be run separately as specified.
