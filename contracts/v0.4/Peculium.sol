@@ -203,7 +203,7 @@ string public name = "Peculium"; //token name
 	}
 
 
-  	function getOwnerInfos() constant returns (address owneraddr, uint256 balance, uint256 frosted, uint256 defrosted)  {
+  	function getOwnerInfos() constant returns (address owneraddr, uint256 balance)  {
     		owneraddr= owner;
 		balance = balances[owneraddr];
   	}
