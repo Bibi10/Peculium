@@ -84,6 +84,10 @@ string public name = "Peculium"; //token name
     }
 
 
+	function canDefrost() onlyOwner constant returns (bool bCanDefrost){
+		bCanDefrost = now > START_ICO_TIMESTAMP;
+  	}
+
          
 
   	function getBlockTimestamp() constant returns (uint256){
