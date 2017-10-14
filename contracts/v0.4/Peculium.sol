@@ -13,7 +13,7 @@ contract Peculium is MintableToken {
     	string public symbol = "PCL";
     	uint256 public decimals = 8;
 	uint256 public NB_TOKEN = 20000000000; // number of token to create
-	uint256 public constant MONTHLY_SEND_BOUNTY_MANAGER = 20; // monthly pourcent to send to the bounty holder
+	//uint256 public constant MONTHLY_SEND_BOUNTY_MANAGER = 20; // monthly pourcent to send to the bounty holder
         //uint256 public constant MAX_SUPPLY_NBTOKEN   = NB_TOKEN*10** decimals;
         uint256 public constant MAX_SUPPLY_NBTOKEN   = 20000000000*10**8; //NB_TOKEN*10** decimals;
 	
@@ -147,18 +147,30 @@ contract Peculium is MintableToken {
               
 	}
 
-	address bountyholder ; // public key of the bounty holder 
+	address bountymanager ; // public key of the bounty manager 
 	
-	function change_bounty_holder (address public_key) onlyOwner{ // to change the bounty holder
-		bountyholder = public_key;
+	function change_bounty_manager (address public_key) onlyOwner{ // to change the bounty manager
+		bountymanager = public_key;
 	}
 	
-	
-	function payBounty() { // to pay the bountyholder
-		if(msg.sender==bountyholder && now > beginICOdate){ 
-			balances[msg.sender] +=MONTHLY_SEND_BOUNTY_MANAGER * bountymanagerShare/100;
-			bountymanagerShare -=MONTHLY_SEND_BOUNTY_MANAGER * bountymanagerShare/100;
-			beginICOdate = beginICOdate + 30; // Can only be called once a month		
+	bool First_pay_bountymanager=true;
+	uint256 first_pay = 40*bountymanagerShare/100;
+	uint256 montly_pay = 10*bountymanagerShare/100;
+	function payBounty() { // to pay the bountymanager
+		
+		if(msg.sender==bountymanager ){ 
+			if((First_pay_bountymanager==true) && (now > END_ICO_TIMESTAMP)){ 
+			balances[msg.sender] += first_pay; // The first payment is 40% of the total money due to the bounty manager
+			bountymanagerShare -= first_pay;
+			First_pay_bountymanager = false;
+			uint256 pay_day = END_ICO_TIMESTAMP + 30;
+			}
+			else if( (First_pay_bountymanager==false) && (now > pay_day)){
+			balances[msg.sender] += montly_pay; // Every month , the bounty manager receive 10% of the total money due to him.
+			bountymanagerShare -= montly_pay;
+			pay_day = pay_day + 30; // Can only be called once a month		
+			
+			}
 		}
 	
 	
