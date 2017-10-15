@@ -13,8 +13,6 @@ contract Peculium is MintableToken {
     	string public symbol = "PCL";
     	uint256 public decimals = 8;
 	uint256 public NB_TOKEN = 20000000000; // number of token to create
-	//uint256 public constant MONTHLY_SEND_BOUNTY_MANAGER = 20; // monthly pourcent to send to the bounty holder
-        //uint256 public constant MAX_SUPPLY_NBTOKEN   = NB_TOKEN*10** decimals;
         uint256 public constant MAX_SUPPLY_NBTOKEN   = 20000000000*10**8; //NB_TOKEN*10** decimals;
 	
 	uint256 public START_PRE_ICO_TIMESTAMP   =1509494400; //start date of PRE_ICO 
@@ -182,9 +180,6 @@ contract Peculium is MintableToken {
 		allowed[msg.sender][_spender] = _value;
 		Approval(msg.sender, _spender, _value);
 
-		//call the receiveApproval function on the contract you want to be notified. This crafts the function signature manually so one doesn't have to include a contract in here just for this.
-		//receiveApproval(address _from, uint256 _value, address _tokenContract, bytes _extraData)
-		//it is assumed that when does this that the call *should* succeed, otherwise one would use vanilla approve instead.
 		require(_spender.call(bytes4(bytes32(sha3("receiveApproval(address,uint256,address,bytes)"))), msg.sender, _value, this, _extraData));
         	return true;
     }
