@@ -45,7 +45,7 @@ contract Peculium is MintableToken {
 	}
 
 
-	function buyTokenPreIco(address toAddress, uint256 _vamounts) onlyOwner {
+	function buyTokenPreIco(address toAddress, uint256 _vamounts) payable onlyOwner {
             require ( batchAssignStopped == false );
 	    if (START_PRE_ICO_TIMESTAMP <=now && now <= (START_PRE_ICO_TIMESTAMP + THREE_HOURS_TIMESTAMP)){   
                  
@@ -66,7 +66,7 @@ contract Peculium is MintableToken {
 	}
 
 	
-	function buyTokenIco(address toAddress, uint256 _vamounts) onlyOwner {
+	function buyTokenIco(address toAddress, uint256 _vamounts) payable onlyOwner {
 	         require ( batchAssignStopped == false );
 		 if ((START_ICO_TIMESTAMP) < now && now <= (START_ICO_TIMESTAMP + 2*WEEK_TIMESTAMP) ){
                  
@@ -106,13 +106,17 @@ contract Peculium is MintableToken {
 	}
 
 
-	function buyTokenPostIco(address toAddress, uint256 _vamounts) onlyOwner {
+	function buyTokenPostIco(address toAddress, uint256 _vamounts) payable onlyOwner {
 		require ( batchAssignStopped == false );      
 		uint256 amountTo_Send = _vamounts*10**decimals;
 		balances[toAddress] += amountTo_Send;        
 	}
 
-
+	function() payable 
+	{
+	
+	}
+	
 	function airdropsTokens(address[] _vaddr, uint256[] _vamounts) onlyOwner {
 		require ( batchAssignStopped == false );
 		require ( _vaddr.length == _vamounts.length );
