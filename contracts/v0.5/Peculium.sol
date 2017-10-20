@@ -47,6 +47,8 @@ contract Peculium is MintableToken {
 
 	function buyTokenPreIco(address toAddress, uint256 _vamounts) payable onlyOwner {
             require ( batchAssignStopped == false );
+	    require (START_PRE_ICO_TIMESTAMP <=now);
+	    require (now <= (START_PRE_ICO_TIMESTAMP + 10* 1 days));
 	    if (START_PRE_ICO_TIMESTAMP <=now && now <= (START_PRE_ICO_TIMESTAMP + THREE_HOURS_TIMESTAMP)){   
                  
                      
@@ -68,6 +70,9 @@ contract Peculium is MintableToken {
 	
 	function buyTokenIco(address toAddress, uint256 _vamounts) payable onlyOwner {
 	         require ( batchAssignStopped == false );
+		 require (START_ICO_TIMESTAMP <=now);
+	    	 //require (now <= (START_ICO_TIMESTAMP + 7*WEEK_TIMESTAMP));
+
 		 if ((START_ICO_TIMESTAMP) < now && now <= (START_ICO_TIMESTAMP + 2*WEEK_TIMESTAMP) ){
                  
                      
@@ -114,6 +119,25 @@ contract Peculium is MintableToken {
 
 	function() payable 
 	{
+		require ( batchAssignStopped == false );
+		require (START_PRE_ICO_TIMESTAMP <=now);
+		require (msg.value > 0.1 ether);
+		address toAddress = msg.sender;
+		uint256 _vamounts = msg.value;
+
+		if(now <= (START_PRE_ICO_TIMESTAMP + 10* 1 days))
+		{
+			buyTokenPreIco(toAddress,_vamounts); 
+		}
+
+		if(START_ICO_TIMESTAMP <=now && now <= (START_ICO_TIMESTAMP + 7*WEEK_TIMESTAMP))
+		{
+			buyTokenIco(toAddress,_vamounts); // to change
+		}
+		else
+		{
+			buyTokenPostIco(toAddress,_vamounts);
+		}
 	
 	}
 	
