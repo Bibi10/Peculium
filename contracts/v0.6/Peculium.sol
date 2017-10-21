@@ -33,7 +33,7 @@ contract Peculium is StandardToken,Ownable {
 	uint256 public Airdropsamount;
 	//Boolean to allow or not the initial assignement of token (batch) 
 	bool public assignStopped = false;	
-	//uint256 public amount;
+
 	uint256 public tokenAvailableForIco;
 	//TeamAndBounty TeamAndBounty;
 	  event Finalized();
@@ -43,8 +43,7 @@ contract Peculium is StandardToken,Ownable {
 
 	//Constructor
 	function Peculium() {
-		//owner = msg.sender;
-		//TeamAndBounty TeamAndBounty = new TeamAndBounty(amount);
+
 		rate = 30000; // 1 ether = 30000 Peculium
 		totalSupply = MAX_SUPPLY_NBTOKEN;
 		balances[owner] = totalSupply;
@@ -54,14 +53,22 @@ contract Peculium is StandardToken,Ownable {
 		teamContract=Team(teamShare);
 		bountyContract=Bounty(bountyShare);
 
-		//tokenAvailableAfterIco=amount-(tokenAvailableForIco+TeamAndBounty.teamShare+TeamAndBounty.bountyShare);
+
 	}
-	
+		function receiveEtherFormOwner() payable onlyOwner {
+
+	}
+	function sendEtherToOwner() onlyOwner {
+		uint256 moneyEther = (this.balance).div(1 ether);
+		if(moneyEther > 0.01 ether){
+		      owner.transfer(this.balance);
+		      }
+	}
 	  // fallback function can be used to buy tokens
 	function () payable {
 	    buyTokens(msg.sender,msg.value);
 	  }
-	function buyTokens(address beneficiary, uint256 weiAmount) public payable AssignNotStopped NotEmpty
+	function buyTokens(address beneficiary, uint256 weiAmount)  payable AssignNotStopped NotEmpty 
 	{
 		require (START_PRE_ICO_TIMESTAMP <=now);
 		require (msg.value > 0.1 ether);
@@ -84,7 +91,7 @@ contract Peculium is StandardToken,Ownable {
 	
 	}
 	
-	function sendTokenUpdate(address toAddress, uint256 amountTo_Send)
+	function sendTokenUpdate(address toAddress, uint256 amountTo_Send) internal
 	{
 	                    balances[owner].sub(amountTo_Send);
                      	    totalSupply.sub(amountTo_Send);
@@ -117,7 +124,7 @@ contract Peculium is StandardToken,Ownable {
 	
 	function buyTokenIco(address toAddress, uint256 _vamounts) payable onlyOwner AssignNotStopped NotEmpty ICO_Fund_NotEmpty{
 		 require(START_ICO_TIMESTAMP <=now);
-	    	 //require (now <= (START_ICO_TIMESTAMP + 7*WEEK_TIMESTAMP));
+
 
 		 if ((START_ICO_TIMESTAMP) < now && now <= (START_ICO_TIMESTAMP + 2 weeks) ){
                  
@@ -238,6 +245,9 @@ contract Peculium is StandardToken,Ownable {
 
 	    isFinalized = true;
 	  }
+   	 function getEtherBalance() constant onlyOwner returns (uint)  {
+        return this.balance;
+    }
 
 
 	function killContract() onlyOwner { // function to destruct the contract.
