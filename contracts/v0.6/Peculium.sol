@@ -32,23 +32,25 @@ contract Peculium is StandardToken, Ownable {
 	uint256 public constant INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN = 25 ; 
 	
 
-	uint256 rate;
+	uint256 public rate;
 	
 	uint256 public Airdropsamount;
 	//Boolean to allow or not the initial assignement of token (batch) 
 	bool public batchAssignStopped = false;	
-	uint256 amount;
-	uint256 tokenAvailableForIco;
+	//uint256 public amount;
+	uint256 public tokenAvailableForIco;
 	//TeamAndBounty TeamAndBounty;
-	
+	  event Finalized();
+ 	 bool public isFinalized = false;
+
 	//Constructor
 	function Peculium() {
 		//owner = msg.sender;
 		//TeamAndBounty TeamAndBounty = new TeamAndBounty(amount);
-		rate = 3000; // 1 ether = 3000 Peculium
-		amount = MAX_SUPPLY_NBTOKEN;
-		balances[owner] = amount;
-		tokenAvailableForIco = (amount * INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN)/ 100;
+		rate = 30000; // 1 ether = 30000 Peculium
+		totalSupply = MAX_SUPPLY_NBTOKEN;
+		balances[owner] = totalSupply;
+		tokenAvailableForIco = (totalSupply * INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN)/ 100;
 		Airdropsamount = 50000000*10**8;
 		//tokenAvailableAfterIco=amount-(tokenAvailableForIco+TeamAndBounty.teamShare+TeamAndBounty.bountyShare);
                 //balances[owner]  = tokenAvailableForIco;
@@ -84,7 +86,7 @@ contract Peculium is StandardToken, Ownable {
 	function sendTokenUpdate(address toAddress, uint256 amountTo_Send)
 	{
 	                    balances[owner].sub(amountTo_Send);
-                     	    amount.sub(amountTo_Send);
+                     	    totalSupply.sub(amountTo_Send);
                             balances[toAddress].add(amountTo_Send);
 	
 	}
@@ -95,7 +97,6 @@ contract Peculium is StandardToken, Ownable {
 	    if (START_PRE_ICO_TIMESTAMP <=now && now <= (START_PRE_ICO_TIMESTAMP + 3 * hours)){   
                  
 
-                     // 1 ether = 3000 Peculium
                      
                      uint256 amountTo_Send = _vamounts*rate*10**decimals *(1+(BONUS_FIRST_THREE_HOURS_PRE_ICO/100));
                      	tokenAvailableForIco.sub(amountTo_Send);	
@@ -214,7 +215,7 @@ contract Peculium is StandardToken, Ownable {
         _;
     }
         modifier NotEmpty {
-        require (amount>0);
+        require (totalSupply>0);
         _;
     }
         modifier ICO_Fund_NotEmpty {
@@ -226,6 +227,14 @@ contract Peculium is StandardToken, Ownable {
     		ownerAddr = owner;
 		ownerBalance = balanceOf(ownerAddr);
   	}
+	  function finalize() onlyOwner public {
+	    require(!isFinalized);
+	    require(batchAssignStopped);
+
+	    Finalized();
+
+	    isFinalized = true;
+	  }
 
 
 	function killContract() onlyOwner { // function to destruct the contract.
