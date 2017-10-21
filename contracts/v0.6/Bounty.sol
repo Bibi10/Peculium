@@ -1,10 +1,11 @@
 /*
 This Token Contract implements the Peculium token (beta)
 .*/
-
+import "./StandardToken.sol";
+import "./Ownable.sol";
 pragma solidity ^0.4.8;
 
-contract TeamAndBounty {
+contract Bounty is StandardToken, Ownable  {
 	uint256 public START_PRE_ICO_TIMESTAMP   =1509494400; //start date of PRE_ICO 
         uint256 public START_ICO_TIMESTAMP=START_PRE_ICO_TIMESTAMP+ 10* 1 days ;
 	uint256 public END_ICO_TIMESTAMP   =1514764800; //end date of ICO 
@@ -15,10 +16,10 @@ contract TeamAndBounty {
 	uint256 public bountymanagerShare;
 	uint256 public bountyFinal;
 	uint256 public constant END_PAYMENTE_TIMESTAMP=1533074400;	
-	uint256 amount;
+	
 	
 	//Constructor
-	function TeamAndBounty(uint256 amount) {
+	function Bounty(uint256 amount) {
 		bountyShare=amount;
 		bountymanagerShare = 72000000*10**8; // we allocate 72 million token to the bounty manager
 		bountyFinal= bountyShare - bountymanagerShare;
