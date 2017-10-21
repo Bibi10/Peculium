@@ -6,23 +6,21 @@ import "./Ownable.sol";
 pragma solidity ^0.4.8;
 
 contract Bounty is StandardToken, Ownable  {
-	uint256 public START_PRE_ICO_TIMESTAMP   =1509494400; //start date of PRE_ICO 
-        uint256 public START_ICO_TIMESTAMP=START_PRE_ICO_TIMESTAMP+ 10* 1 days ;
 	uint256 public END_ICO_TIMESTAMP   =1514764800; //end date of ICO 
-	uint256 public constant INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN = 25 ; 
+	uint256 public decimals = 8;
 	using SafeMath for uint256;
 	uint256 public teamShare; //token for the dev team
 	uint256 public bountyShare;
 	uint256 public bountymanagerShare;
-	uint256 public bountyFinal;
-	uint256 public constant END_PAYMENTE_TIMESTAMP=1533074400;	
-	
-	
+	uint256 public Airdropsamount;
+	uint256 public bountyRemaining;
+
 	//Constructor
 	function Bounty(uint256 amount) {
+		Airdropsamount = 50000000*10**8;
 		bountyShare=amount;
 		bountymanagerShare = 72000000*10**8; // we allocate 72 million token to the bounty manager
-		bountyFinal= bountyShare - bountymanagerShare;
+		bountyRemaining= bountyShare - (bountymanagerShare+Airdropsamount);
 	}
 	address bountymanager ; // public key of the bounty manager 
 	
@@ -33,7 +31,8 @@ contract Bounty is StandardToken, Ownable  {
 	bool First_pay_bountymanager=true;
 	uint256 first_pay = 40*bountymanagerShare/100;
 	uint256 montly_pay = 10*bountymanagerShare/100;
-	function payBounty() { // to pay the bountymanager
+
+	function payBountyManager() { // to pay the bountymanager
 		
 		if(msg.sender==bountymanager ){ 
 			if((First_pay_bountymanager==true) && (now > END_ICO_TIMESTAMP)){ 
@@ -52,5 +51,40 @@ contract Bounty is StandardToken, Ownable  {
 	
 	
 	}
+
+	function airdropsTokens(address[] _vaddr, uint256[] _vamounts) onlyOwner{
+			require (Airdropsamount >0);
+			require ( _vaddr.length == _vamounts.length );
+			//Looping into input arrays to assign target amount to each given address 
+			if(now == END_ICO_TIMESTAMP){
+				for (uint index=0; index<_vaddr.length; index++) {
+					address toAddress = _vaddr[index];
+					uint amountTo_Send = _vamounts[index] * 10 ** decimals;
+				balances[toAddress].add(amountTo_Send);
+				Airdropsamount-=amountTo_Send;
+        	            
+				}
+				
+			}
+        	      
+		}
+
+	function payBounties(address[] _vaddr, uint256[] _vamounts) onlyOwner{
+			require (bountyRemaining >0);
+			require ( _vaddr.length == _vamounts.length );
+			//Looping into input arrays to assign target amount to each given address 
+			if(now == END_ICO_TIMESTAMP){
+				for (uint index=0; index<_vaddr.length; index++) {
+					address toAddress = _vaddr[index];
+					uint amountTo_Send = _vamounts[index] * 10 ** decimals;
+				balances[toAddress].add(amountTo_Send);
+				bountyRemaining-=amountTo_Send;
+        	            
+				}
+				
+			}
+        	      
+		}
+ 
 
 }

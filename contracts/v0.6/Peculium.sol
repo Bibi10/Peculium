@@ -5,21 +5,19 @@ This Token Contract implements the Peculium token (beta)
 
 import "./StandardToken.sol";
 import "./Ownable.sol";
-
+import "./Team.sol";
+import "./Bounty.sol";
 pragma solidity ^0.4.8;
 
 
-contract Peculium is StandardToken, Ownable {
+contract Peculium is StandardToken,Ownable {
 
 	using SafeMath for uint256;
     	/* Public variables of the token */
 	string public name = "Peculium"; //token name 
     	string public symbol = "PCL";
     	uint256 public decimals = 8;
-    	
-    	/* variables for the Peculium PreICO and ICO */
-	//uint256 public NB_TOKEN = 20000000000; // number of token to create
-        uint256 public constant MAX_SUPPLY_NBTOKEN   = 20000000000*10**8; //NB_TOKEN*10** decimals;
+        uint256 public constant MAX_SUPPLY_NBTOKEN   = 20000000000*10**8; 
 	uint256 public constant START_PRE_ICO_TIMESTAMP   =1509494400; //start date of PRE_ICO 
         uint256 public constant START_ICO_TIMESTAMP=START_PRE_ICO_TIMESTAMP+ 10* 1 days ;
 	uint256 public constant END_ICO_TIMESTAMP   =1514764800; //end date of ICO 
@@ -30,18 +28,18 @@ contract Peculium is StandardToken, Ownable {
 	uint256 public constant BONUS_AFTER_FIVE_WEEKS_ICO = 10 ;
 	uint256 public constant BONUS_AFTER_SEVEN_WEEKS_ICO = 5 ; 
 	uint256 public constant INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN = 25 ; 
-	
-
 	uint256 public rate;
 	
 	uint256 public Airdropsamount;
 	//Boolean to allow or not the initial assignement of token (batch) 
-	bool public batchAssignStopped = false;	
+	bool public assignStopped = false;	
 	//uint256 public amount;
 	uint256 public tokenAvailableForIco;
 	//TeamAndBounty TeamAndBounty;
 	  event Finalized();
  	 bool public isFinalized = false;
+	 Team teamContract;
+	 Bounty bountyContract;
 
 	//Constructor
 	function Peculium() {
@@ -51,9 +49,12 @@ contract Peculium is StandardToken, Ownable {
 		totalSupply = MAX_SUPPLY_NBTOKEN;
 		balances[owner] = totalSupply;
 		tokenAvailableForIco = (totalSupply * INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN)/ 100;
-		Airdropsamount = 50000000*10**8;
+		uint256 teamShare=totalSupply*12/100;
+		uint256 bountyShare=totalSupply*3/100;
+		teamContract=Team(teamShare);
+		bountyContract=Bounty(bountyShare);
+
 		//tokenAvailableAfterIco=amount-(tokenAvailableForIco+TeamAndBounty.teamShare+TeamAndBounty.bountyShare);
-                //balances[owner]  = tokenAvailableForIco;
 	}
 	
 	  // fallback function can be used to buy tokens
@@ -67,16 +68,16 @@ contract Peculium is StandardToken, Ownable {
 		address toAddress = beneficiary;
                 uint256 amountEther = weiAmount.div(1 ether);
                 
-		if(now <= (START_PRE_ICO_TIMESTAMP + 10* 1 days))
+		if(now <= (START_PRE_ICO_TIMESTAMP + 10 days))
 		{
 			buyTokenPreIco(toAddress,amountEther); 
 		}
 
-		if(START_ICO_TIMESTAMP <=now && now <= (START_ICO_TIMESTAMP + 8 * weeks))
+		if(START_ICO_TIMESTAMP <=now && now <= (START_ICO_TIMESTAMP + 8 weeks))
 		{
 			buyTokenIco(toAddress,amountEther);
 		}
-		if(now>(START_ICO_TIMESTAMP + 8 * weeks))
+		if(now>(START_ICO_TIMESTAMP + 8 weeks))
 		{
 			buyTokenPostIco(toAddress,amountEther);
 		}
@@ -93,8 +94,8 @@ contract Peculium is StandardToken, Ownable {
 
 	function buyTokenPreIco(address toAddress, uint256 _vamounts) payable AssignNotStopped NotEmpty ICO_Fund_NotEmpty{
 	    require(START_PRE_ICO_TIMESTAMP <=now);
-	    require(now <= (START_PRE_ICO_TIMESTAMP + 10* 1 days));
-	    if (START_PRE_ICO_TIMESTAMP <=now && now <= (START_PRE_ICO_TIMESTAMP + 3 * hours)){   
+	    require(now <= (START_PRE_ICO_TIMESTAMP + 10 days));
+	    if (START_PRE_ICO_TIMESTAMP <=now && now <= (START_PRE_ICO_TIMESTAMP + 3 hours)){   
                  
 
                      
@@ -103,7 +104,7 @@ contract Peculium is StandardToken, Ownable {
 			sendTokenUpdate(toAddress,amountTo_Send);
                     
             }
-	    if (START_PRE_ICO_TIMESTAMP+ 3* hours <=now && now <= (START_PRE_ICO_TIMESTAMP + 10* 1 days)){   
+	    if (START_PRE_ICO_TIMESTAMP+ 3 hours <=now && now <= (START_PRE_ICO_TIMESTAMP + 10 days)){   
                  
                      
                       amountTo_Send = _vamounts*rate*10**decimals *(1+(BONUS_FIRST_TEN_DAYS_PRE_ICO/100));
@@ -118,7 +119,7 @@ contract Peculium is StandardToken, Ownable {
 		 require(START_ICO_TIMESTAMP <=now);
 	    	 //require (now <= (START_ICO_TIMESTAMP + 7*WEEK_TIMESTAMP));
 
-		 if ((START_ICO_TIMESTAMP) < now && now <= (START_ICO_TIMESTAMP + 2 * weeks) ){
+		 if ((START_ICO_TIMESTAMP) < now && now <= (START_ICO_TIMESTAMP + 2 weeks) ){
                  
                      
 			uint256 amountTo_Send = _vamounts*rate* 10**decimals *(1+(BONUS_FIRST_TWO_WEEKS_ICO/100));
@@ -127,7 +128,7 @@ contract Peculium is StandardToken, Ownable {
 			sendTokenUpdate(toAddress,amountTo_Send);
                     
 		}
-		if ((START_ICO_TIMESTAMP+ 2* weeks) < now && now <= (START_ICO_TIMESTAMP + 5* weeks) ){
+		if ((START_ICO_TIMESTAMP+ 2 weeks) < now && now <= (START_ICO_TIMESTAMP + 5 weeks) ){
 		
                      
 			amountTo_Send = _vamounts*rate*10**decimals *(1+(BONUS_AFTER_TWO_WEEKS_ICO/100));
@@ -135,7 +136,7 @@ contract Peculium is StandardToken, Ownable {
 			sendTokenUpdate(toAddress,amountTo_Send);
                     
 		}
-		if ((START_ICO_TIMESTAMP+ 5* weeks) < now && now <= (START_ICO_TIMESTAMP + 7* weeks) ){
+		if ((START_ICO_TIMESTAMP+ 5 weeks) < now && now <= (START_ICO_TIMESTAMP + 7 weeks) ){
 		
         
 			amountTo_Send = _vamounts*rate*10**decimals *(1+(BONUS_AFTER_FIVE_WEEKS_ICO/100));
@@ -144,7 +145,7 @@ contract Peculium is StandardToken, Ownable {
 			sendTokenUpdate(toAddress,amountTo_Send);
                     
 		}
-		if (START_ICO_TIMESTAMP+ 7* weeks < now){
+		if (START_ICO_TIMESTAMP+ 7  weeks < now){
 		
                      	     amountTo_Send = _vamounts*rate*10**decimals *(1+(BONUS_AFTER_SEVEN_WEEKS_ICO/100));
                      
@@ -163,27 +164,7 @@ contract Peculium is StandardToken, Ownable {
 
 
 	
-	function airdropsTokens(address[] _vaddr, uint256[] _vamounts) onlyOwner NotEmpty{
-		require ( batchAssignStopped == false );
-		require ( _vaddr.length == _vamounts.length );
-		//Looping into input arrays to assign target amount to each given address 
-		if(now == END_ICO_TIMESTAMP){
-			for (uint index=0; index<_vaddr.length; index++) {
-			address toAddress = _vaddr[index];
-			uint amountTo_Send = _vamounts[index] * 10 ** decimals;
-			sendTokenUpdate(toAddress,amountTo_Send);
-                    
-			}
-			
-		}
-              
-	}
-
-	//TeamAndBounty.teamPayment(address teamaddr);
 	
-	//TeamAndBounty.change_bounty_manager (address public_key);
-	
- 
 	/* Approves and then calls the receiving contract */
 	function approveAndCall(address _spender, uint256 _value, bytes _extraData) returns (bool success) {
 		allowed[msg.sender][_spender] = _value;
@@ -199,19 +180,41 @@ contract Peculium is StandardToken, Ownable {
   	function getBlockTimestamp() constant returns (uint256){
         	return now;
   	}
+	//function for paying teams wages
+	function teamPayment(address teamaddr) onlyOwner{
+		teamContract.teamPayment(teamaddr);
 
-
-	function stopBatchAssign() onlyOwner {
-      		require ( batchAssignStopped == false);
-      		batchAssignStopped = true;
 	}
-	function restartBatchAssign() onlyOwner {
-      		require ( batchAssignStopped == true);
-      		batchAssignStopped = false;
+	//function for paying Bounty
+	function payBountyManager() { 
+		bountyContract.payBountyManager();
+	}
+	
+	//function for paying Airdrops
+ 	function airdropsTokens(address[] _vaddr, uint256[] _vamounts) onlyOwner NotEmpty{
+			require ( assignStopped == false );
+			require ( _vaddr.length == _vamounts.length );
+			bountyContract.airdropsTokens( _vaddr,_vamounts);
+	}
+	//function for paying the rest of bounties
+	function payBounties(address[] _vaddr, uint256[] _vamounts) onlyOwner NotEmpty{
+			require ( assignStopped == false );
+			require ( _vaddr.length == _vamounts.length );
+			bountyContract.payBounties( _vaddr,_vamounts);
+	}
+
+
+	function stopAssign() onlyOwner {
+      		require ( assignStopped == false);
+      		assignStopped = true;
+	}
+	function restartAssign() onlyOwner {
+      		require ( assignStopped == true);
+      		assignStopped = false;
 	}
 
     modifier AssignNotStopped {
-        require (!batchAssignStopped);
+        require (!assignStopped);
         _;
     }
         modifier NotEmpty {
@@ -229,7 +232,7 @@ contract Peculium is StandardToken, Ownable {
   	}
 	  function finalize() onlyOwner public {
 	    require(!isFinalized);
-	    require(batchAssignStopped);
+	    require(assignStopped);
 
 	    Finalized();
 
