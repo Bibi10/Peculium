@@ -1,11 +1,10 @@
 /*
 This Token Contract implements the Peculium token (beta)
 .*/
-import "./StandardToken.sol";
 import "./Ownable.sol";
 pragma solidity ^0.4.8;
 
-contract Bounty is StandardToken, Ownable  {
+contract Bounty is Ownable  {
 	using SafeMath for uint256;
 	uint256 public START_PRE_ICO_TIMESTAMP   =1509494400; //start date of PRE_ICO 
         uint256 public START_ICO_TIMESTAMP=START_PRE_ICO_TIMESTAMP+ 10* 1 days ;
