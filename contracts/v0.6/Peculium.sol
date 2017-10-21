@@ -35,7 +35,7 @@ contract Peculium is StandardToken,Ownable {
 	bool public assignStopped = false;	
 
 	uint256 public tokenAvailableForIco;
-	//TeamAndBounty TeamAndBounty;
+
 	  event Finalized();
  	 bool public isFinalized = false;
 	 Team teamContract;
