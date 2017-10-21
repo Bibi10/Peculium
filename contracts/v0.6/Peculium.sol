@@ -54,7 +54,7 @@ contract Peculium is StandardToken, Ownable {
 	function Peculium() {
 		//owner = msg.sender;
 		//TeamAndBounty TeamAndBounty = new TeamAndBounty(amount);
-		rate = 30000;   // 1 ether = 30000 Peculium
+		rate = 3000; // 1 ether = 3000 Peculium
 		totalSupply = MAX_SUPPLY_NBTOKEN;
 		balances[owner] = totalSupply;
 		tokenAvailableForIco = (totalSupply * INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN)/ 100;
@@ -104,7 +104,7 @@ contract Peculium is StandardToken, Ownable {
 	    if (START_PRE_ICO_TIMESTAMP <=now && now <= (START_PRE_ICO_TIMESTAMP + THREE_HOURS_TIMESTAMP)){   
                  
 
-
+                     // 1 ether = 3000 Peculium
                      
                      uint256 amountTo_Send = _vamounts*rate*10**decimals *(1+(BONUS_FIRST_THREE_HOURS_PRE_ICO/100));
                      	tokenAvailableForIco.sub(amountTo_Send);	
