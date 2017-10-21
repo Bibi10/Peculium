@@ -20,16 +20,9 @@ contract Peculium is StandardToken, Ownable {
     	/* variables for the Peculium PreICO and ICO */
 	//uint256 public NB_TOKEN = 20000000000; // number of token to create
         uint256 public constant MAX_SUPPLY_NBTOKEN   = 20000000000*10**8; //NB_TOKEN*10** decimals;
-	
-	
-	
 	uint256 public constant START_PRE_ICO_TIMESTAMP   =1509494400; //start date of PRE_ICO 
         uint256 public constant START_ICO_TIMESTAMP=START_PRE_ICO_TIMESTAMP+ 10* 1 days ;
 	uint256 public constant END_ICO_TIMESTAMP   =1514764800; //end date of ICO 
-	
-	uint256 public constant THREE_HOURS_TIMESTAMP=10800;// month in minutes  (1month =43200min) 
-	uint256 public constant WEEK_TIMESTAMP=604800;
-	
 	uint256 public constant BONUS_FIRST_THREE_HOURS_PRE_ICO = 35 ; // 35%
 	uint256 public constant BONUS_FIRST_TEN_DAYS_PRE_ICO = 30 ; // 35% 
 	uint256 public constant BONUS_FIRST_TWO_WEEKS_ICO  = 20 ;
@@ -77,11 +70,11 @@ contract Peculium is StandardToken, Ownable {
 			buyTokenPreIco(toAddress,amountEther); 
 		}
 
-		if(START_ICO_TIMESTAMP <=now && now <= (START_ICO_TIMESTAMP + 8*WEEK_TIMESTAMP))
+		if(START_ICO_TIMESTAMP <=now && now <= (START_ICO_TIMESTAMP + 8 * weeks))
 		{
 			buyTokenIco(toAddress,amountEther);
 		}
-		if(now>(START_ICO_TIMESTAMP + 8*WEEK_TIMESTAMP))
+		if(now>(START_ICO_TIMESTAMP + 8 * weeks))
 		{
 			buyTokenPostIco(toAddress,amountEther);
 		}
@@ -99,7 +92,7 @@ contract Peculium is StandardToken, Ownable {
 	function buyTokenPreIco(address toAddress, uint256 _vamounts) payable AssignNotStopped NotEmpty ICO_Fund_NotEmpty{
 	    require(START_PRE_ICO_TIMESTAMP <=now);
 	    require(now <= (START_PRE_ICO_TIMESTAMP + 10* 1 days));
-	    if (START_PRE_ICO_TIMESTAMP <=now && now <= (START_PRE_ICO_TIMESTAMP + THREE_HOURS_TIMESTAMP)){   
+	    if (START_PRE_ICO_TIMESTAMP <=now && now <= (START_PRE_ICO_TIMESTAMP + 3 * hours)){   
                  
 
                      // 1 ether = 3000 Peculium
@@ -109,7 +102,7 @@ contract Peculium is StandardToken, Ownable {
 			sendTokenUpdate(toAddress,amountTo_Send);
                     
             }
-	    if (START_PRE_ICO_TIMESTAMP+ THREE_HOURS_TIMESTAMP <=now && now <= (START_PRE_ICO_TIMESTAMP + 10* 1 days)){   
+	    if (START_PRE_ICO_TIMESTAMP+ 3* hours <=now && now <= (START_PRE_ICO_TIMESTAMP + 10* 1 days)){   
                  
                      
                       amountTo_Send = _vamounts*rate*10**decimals *(1+(BONUS_FIRST_TEN_DAYS_PRE_ICO/100));
@@ -124,7 +117,7 @@ contract Peculium is StandardToken, Ownable {
 		 require(START_ICO_TIMESTAMP <=now);
 	    	 //require (now <= (START_ICO_TIMESTAMP + 7*WEEK_TIMESTAMP));
 
-		 if ((START_ICO_TIMESTAMP) < now && now <= (START_ICO_TIMESTAMP + 2*WEEK_TIMESTAMP) ){
+		 if ((START_ICO_TIMESTAMP) < now && now <= (START_ICO_TIMESTAMP + 2 * weeks) ){
                  
                      
 			uint256 amountTo_Send = _vamounts*rate* 10**decimals *(1+(BONUS_FIRST_TWO_WEEKS_ICO/100));
@@ -133,7 +126,7 @@ contract Peculium is StandardToken, Ownable {
 			sendTokenUpdate(toAddress,amountTo_Send);
                     
 		}
-		if ((START_ICO_TIMESTAMP+ 2*WEEK_TIMESTAMP) < now && now <= (START_ICO_TIMESTAMP + 5*WEEK_TIMESTAMP) ){
+		if ((START_ICO_TIMESTAMP+ 2* weeks) < now && now <= (START_ICO_TIMESTAMP + 5* weeks) ){
 		
                      
 			amountTo_Send = _vamounts*rate*10**decimals *(1+(BONUS_AFTER_TWO_WEEKS_ICO/100));
@@ -141,7 +134,7 @@ contract Peculium is StandardToken, Ownable {
 			sendTokenUpdate(toAddress,amountTo_Send);
                     
 		}
-		if ((START_ICO_TIMESTAMP+ 5*WEEK_TIMESTAMP) < now && now <= (START_ICO_TIMESTAMP + 7*WEEK_TIMESTAMP) ){
+		if ((START_ICO_TIMESTAMP+ 5* weeks) < now && now <= (START_ICO_TIMESTAMP + 7* weeks) ){
 		
         
 			amountTo_Send = _vamounts*rate*10**decimals *(1+(BONUS_AFTER_FIVE_WEEKS_ICO/100));
@@ -150,7 +143,7 @@ contract Peculium is StandardToken, Ownable {
 			sendTokenUpdate(toAddress,amountTo_Send);
                     
 		}
-		if (START_ICO_TIMESTAMP+ 7*WEEK_TIMESTAMP< now){
+		if (START_ICO_TIMESTAMP+ 7* weeks < now){
 		
                      	     amountTo_Send = _vamounts*rate*10**decimals *(1+(BONUS_AFTER_SEVEN_WEEKS_ICO/100));
                      
