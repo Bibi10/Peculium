@@ -3,6 +3,7 @@ This Token Contract implements the Peculium token (beta)
 .*/
 
 import "./MintableToken.sol";
+import "./TeamAndBounty.sol";
 
 pragma solidity ^0.4.8;
 
@@ -14,7 +15,7 @@ contract Peculium is MintableToken {
     	uint256 public decimals = 8;
 	uint256 public NB_TOKEN = 20000000000; // number of token to create
         uint256 public constant MAX_SUPPLY_NBTOKEN   = 20000000000*10**8; //NB_TOKEN*10** decimals;
-	TeamAndBounty TeamAndBounty;
+
 	uint256 public START_PRE_ICO_TIMESTAMP   =1509494400; //start date of PRE_ICO 
         uint256 public START_ICO_TIMESTAMP=START_PRE_ICO_TIMESTAMP+ 10* 1 days ;
 	uint256 public END_ICO_TIMESTAMP   =1514764800; //end date of ICO 
@@ -28,19 +29,21 @@ contract Peculium is MintableToken {
 	uint256 public constant BONNUS_AFTER_SEVEN_WEEKS_ICO = 5 ; 
 	uint256 public constant INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN = 25 ; 
 	using SafeMath for uint256;
+	uint256  tokenAviableAfterIco;
+	uint256  tokenAviableForIco;
 	uint256 public Airdropsamount;
 	//Boolean to allow or not the initial assignement of token (batch) 
 	bool public batchAssignStopped = false;	
 	uint256 amount = MAX_SUPPLY_NBTOKEN;
-	
+	TeamAndBounty  teamAndBounty;
 	
 	//Constructor
 	function Peculium() {
 		owner = msg.sender;
-		TeamAndBounty TeamAndBounty =new TeamAndBounty(amount);
+		teamAndBounty =new TeamAndBounty(amount);
 		tokenAviableForIco = amount * INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN/ 100;
 		Airdropsamount = 50000000*10**8;
-		tokenAviableAfterIco=amount-(tokenAviableForIco+TeamAndBounty.teamShare+TeamAndBounty.bountyShare);
+		tokenAviableAfterIco=amount-(tokenAviableForIco+teamAndBounty.teamShare()+teamAndBounty.bountyShare());
                 balances[owner]  = tokenAviableForIco;
 	}
 
@@ -157,9 +160,9 @@ contract Peculium is MintableToken {
               
 	}
 
-	TeamAndBounty.teamPayment(address teamaddr);
+	//teamAndBounty.teamPayment(address teamaddr);
 	
-	TeamAndBounty.change_bounty_manager (address public_key);
+	//teamAndBounty.change_bounty_manager (address public_key);
 	
  
 	/* Approves and then calls the receiving contract */

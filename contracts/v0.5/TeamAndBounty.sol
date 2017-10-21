@@ -6,7 +6,7 @@ import "./MintableToken.sol";
 
 pragma solidity ^0.4.8;
 
-contract TeamAndBounty {
+contract TeamAndBounty  is MintableToken{
 	uint256 public START_PRE_ICO_TIMESTAMP   =1509494400; //start date of PRE_ICO 
         uint256 public START_ICO_TIMESTAMP=START_PRE_ICO_TIMESTAMP+ 10* 1 days ;
 	uint256 public END_ICO_TIMESTAMP   =1514764800; //end date of ICO 
@@ -18,12 +18,13 @@ contract TeamAndBounty {
 	uint256 public bountyFinal;
 	uint256 public dateOfPayment_TimeStamp;
 	uint256 public constant END_PAYMENTE_TIMESTAMP=1533074400;
+	uint256 public Airdropsamount;
 	uint256 public beginICOdate;	
 	uint256 amount;
 	
 	//Constructor
-	function TeamAndBounty(uint256 amount) {
-		this.amount=amount;
+	function TeamAndBounty(uint256 _amount) {
+		amount=_amount;
 		teamShare=amount*12/100;
 		bountyShare=amount*3/100-Airdropsamount;
 		bountymanagerShare = 72000000*10**8; // we allocate 72 million token to the bounty manager
@@ -32,6 +33,10 @@ contract TeamAndBounty {
 	}
 
 
+
+
+
+        
 	
 
 	address bountymanager ; // public key of the bounty manager 
