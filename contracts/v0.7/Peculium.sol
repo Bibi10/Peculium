@@ -37,9 +37,13 @@ contract Peculium is BurnableToken,Ownable {
 	
 	uint256 public Airdropsamount;
 	uint256 public amount;
-	//Boolean to allow or not the initial assignement of token (batch) 
-	bool public assignStopped = false;	
-
+	uint256 public reserveToken;
+	uint256 public stakeholderShare;
+	uint256 public bountyShare;
+	//Boolean to allow or not the sale of tokens
+	bool public sales_stopped = false;	
+	bool public isFinalized = false;
+	
 	uint256 public tokenAvailableForIco;
 
 	  event NewRate(uint256 rateUpdate);
@@ -48,10 +52,12 @@ contract Peculium is BurnableToken,Ownable {
 	  event Restartsale();
 	  event Finalized();
  	 
- 	 bool public isFinalized = false;
+ 	 
 	 Stakeholder StakeholderContract;
 	 Bounty bountyContract;
-
+	 
+	
+	
 	//Constructor
 	function Peculium() {
 
@@ -59,9 +65,11 @@ contract Peculium is BurnableToken,Ownable {
 		totalSupply = MAX_SUPPLY_NBTOKEN;
 		amount = totalSupply;
 		balances[owner] = amount;
-		tokenAvailableForIco = (amount * INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN)/ 100;
-		uint256 stakeholderShare=amount*12/100;
-		uint256 bountyShare=amount*3/100;
+		tokenAvailableForIco = (amount.mul(INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN)).div(100);
+		stakeholderShare=(amount.mul(12)).div(100);
+		bountyShare=(amount.mul(3)).div(100);
+		reserveToken = (amount.mul(60)).div(100);
+		
 		StakeholderContract=Stakeholder(stakeholderShare);
 		bountyContract=Bounty(bountyShare);
 
@@ -96,10 +104,8 @@ contract Peculium is BurnableToken,Ownable {
 		{
 			buyTokenIco(toAddress,amountEther);
 		}
-		if(now>(START_ICO_TIMESTAMP + 8 weeks))
-		{
-			buyTokenPostIco(toAddress,amountEther);
-		}
+		
+		// need function to buy token after ICO ? ?
 	
 	}
 	
@@ -174,13 +180,17 @@ contract Peculium is BurnableToken,Ownable {
 	
 	}
 
-
+/*
 	function buyTokenPostIco(address toAddress, uint256 _vamounts) payable SaleNotStopped NotEmpty {
 		uint256 amountTo_Send = _vamounts*rate*10**decimals;
 			sendTokenUpdate(toAddress,amountTo_Send);
 	}
 
-
+*/
+	function updateReserveToken() onlyOwner{
+		require(now>END_ICO_TIMESTAMP);
+		reserveToken.add(tokenAvailableForIco);
+	}
 	
 	
 	/* Approves and then calls the receiving contract */
@@ -210,26 +220,26 @@ contract Peculium is BurnableToken,Ownable {
 	
 	//function for paying Airdrops
  	function airdropsTokens(address[] _vaddr, uint256[] _vamounts) onlyOwner NotEmpty{
-			require ( assignStopped == false );
+			require ( sales_stopped == false );
 			require ( _vaddr.length == _vamounts.length );
 			bountyContract.airdropsTokens( _vaddr,_vamounts);
 	}
 	//function for paying the rest of bounties
 	function payBounties(address[] _vaddr, uint256[] _vamounts) onlyOwner NotEmpty{
-			require ( assignStopped == false );
+			require ( sales_stopped == false );
 			require ( _vaddr.length == _vamounts.length );
 			bountyContract.payBounties( _vaddr,_vamounts);
 	}
 
 
 	function stopSale() onlyOwner public{
-      		require ( assignStopped == false);
-      		assignStopped = true;
+      		require ( sales_stopped == false);
+      		sales_stopped = true;
       		Stopsale();
 	}
 	function restartSale() onlyOwner public{
-      		require ( assignStopped == true);
-      		assignStopped = false;
+      		require ( sales_stopped == true);
+      		sales_stopped = false;
       		Restartsale();
 	}
 	
@@ -239,7 +249,7 @@ contract Peculium is BurnableToken,Ownable {
 	}
 
     modifier SaleNotStopped {
-        require (!assignStopped);
+        require (!sales_stopped);
         _;
     }
         modifier NotEmpty {
@@ -257,7 +267,7 @@ contract Peculium is BurnableToken,Ownable {
   	}
 	  function finalize() onlyOwner public {
 	    require(!isFinalized);
-	    require(assignStopped);
+	    require(sales_stopped);
 
 	    Finalized();
 
