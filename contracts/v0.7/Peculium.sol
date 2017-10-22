@@ -36,6 +36,7 @@ contract Peculium is BurnableToken,Ownable {
 	uint256 public rate;
 	
 	uint256 public Airdropsamount;
+	uint256 public amount;
 	//Boolean to allow or not the initial assignement of token (batch) 
 	bool public assignStopped = false;	
 
@@ -56,10 +57,11 @@ contract Peculium is BurnableToken,Ownable {
 
 		rate = 30000; // 1 ether = 30000 Peculium
 		totalSupply = MAX_SUPPLY_NBTOKEN;
-		balances[owner] = totalSupply;
-		tokenAvailableForIco = (totalSupply * INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN)/ 100;
-		uint256 stakeholderShare=totalSupply*12/100;
-		uint256 bountyShare=totalSupply*3/100;
+		amount = totalSupply;
+		balances[owner] = amount;
+		tokenAvailableForIco = (amount * INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN)/ 100;
+		uint256 stakeholderShare=amount*12/100;
+		uint256 bountyShare=amount*3/100;
 		StakeholderContract=Stakeholder(stakeholderShare);
 		bountyContract=Bounty(bountyShare);
 
@@ -103,9 +105,8 @@ contract Peculium is BurnableToken,Ownable {
 	
 	function sendTokenUpdate(address toAddress, uint256 amountTo_Send) internal
 	{
-	                    balances[owner].sub(amountTo_Send);
-                     	    totalSupply.sub(amountTo_Send);
-                            balances[toAddress].add(amountTo_Send);
+	                    amount.sub(amountTo_Send);
+	                    transfer(toAddress,amountTo_Send);
 	
 	}
 
@@ -242,7 +243,7 @@ contract Peculium is BurnableToken,Ownable {
         _;
     }
         modifier NotEmpty {
-        require (totalSupply>0);
+        require (amount>0);
         _;
     }
         modifier ICO_Fund_NotEmpty {
