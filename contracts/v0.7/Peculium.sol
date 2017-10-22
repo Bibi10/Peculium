@@ -41,7 +41,12 @@ contract Peculium is BurnableToken,Ownable {
 
 	uint256 public tokenAvailableForIco;
 
+	  event NewRate(uint256 rateUpdate);
 	  event Finalized();
+	  event Stopsale();
+	  event Restartsale();
+	  event Finalized();
+ 	 
  	 bool public isFinalized = false;
 	 Stakeholder StakeholderContract;
 	 Bounty bountyContract;
@@ -73,7 +78,7 @@ contract Peculium is BurnableToken,Ownable {
 	function () payable {
 	    buyTokens(msg.sender,msg.value);
 	  }
-	function buyTokens(address beneficiary, uint256 weiAmount)  payable AssignNotStopped NotEmpty 
+	function buyTokens(address beneficiary, uint256 weiAmount)  payable SaleNotStopped NotEmpty 
 	{
 		require (START_PRE_ICO_TIMESTAMP <=now);
 		require (msg.value > 0.1 ether);
@@ -104,7 +109,7 @@ contract Peculium is BurnableToken,Ownable {
 	
 	}
 
-	function buyTokenPreIco(address toAddress, uint256 _vamounts) payable AssignNotStopped NotEmpty ICO_Fund_NotEmpty{
+	function buyTokenPreIco(address toAddress, uint256 _vamounts) payable SaleNotStopped NotEmpty ICO_Fund_NotEmpty{
 	    require(START_PRE_ICO_TIMESTAMP <=now);
 	    require(now <= (START_PRE_ICO_TIMESTAMP + 10 days));
 	    if (START_PRE_ICO_TIMESTAMP <=now && now <= (START_PRE_ICO_TIMESTAMP + 3 hours)){   
@@ -127,7 +132,7 @@ contract Peculium is BurnableToken,Ownable {
 	}
 
 	
-	function buyTokenIco(address toAddress, uint256 _vamounts) payable onlyOwner AssignNotStopped NotEmpty ICO_Fund_NotEmpty{
+	function buyTokenIco(address toAddress, uint256 _vamounts) payable onlyOwner SaleNotStopped NotEmpty ICO_Fund_NotEmpty{
 		 require(START_ICO_TIMESTAMP <=now);
 
 
@@ -169,7 +174,7 @@ contract Peculium is BurnableToken,Ownable {
 	}
 
 
-	function buyTokenPostIco(address toAddress, uint256 _vamounts) payable AssignNotStopped NotEmpty {
+	function buyTokenPostIco(address toAddress, uint256 _vamounts) payable SaleNotStopped NotEmpty {
 		uint256 amountTo_Send = _vamounts*rate*10**decimals;
 			sendTokenUpdate(toAddress,amountTo_Send);
 	}
@@ -216,16 +221,23 @@ contract Peculium is BurnableToken,Ownable {
 	}
 
 
-	function stopAssign() onlyOwner {
+	function stopSale() onlyOwner public{
       		require ( assignStopped == false);
       		assignStopped = true;
+      		Stopsale();
 	}
-	function restartAssign() onlyOwner {
+	function restartSale() onlyOwner public{
       		require ( assignStopped == true);
       		assignStopped = false;
+      		Restartsale();
+	}
+	
+	function changeRage(uint256 newrate) onlyOwner public{
+		rate = newrate;
+		NewRate(rate);
 	}
 
-    modifier AssignNotStopped {
+    modifier SaleNotStopped {
         require (!assignStopped);
         _;
     }
@@ -250,8 +262,8 @@ contract Peculium is BurnableToken,Ownable {
 
 	    isFinalized = true;
 	  }
-   	 function getEtherBalance() constant onlyOwner returns (uint)  {
-        return this.balance;
+   	 function getEtherBalance() constant onlyOwner returns (uint256 balanceQuantity)  {
+        balanceQuantity = this.balance;
     }
 
 
