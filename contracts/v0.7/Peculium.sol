@@ -5,7 +5,7 @@ This Token Contract implements the Peculium token (beta)
 
 import "./BurnableToken.sol";
 import "./Ownable.sol";
-import "./Team.sol";
+import "./Stakeholder.sol";
 import "./Bounty.sol";
 
 import "./SafeERC20.sol";
@@ -43,7 +43,7 @@ contract Peculium is BurnableToken,Ownable {
 
 	  event Finalized();
  	 bool public isFinalized = false;
-	 Team teamContract;
+	 Stakeholder StakeholderContract;
 	 Bounty bountyContract;
 
 	//Constructor
@@ -53,9 +53,9 @@ contract Peculium is BurnableToken,Ownable {
 		totalSupply = MAX_SUPPLY_NBTOKEN;
 		balances[owner] = totalSupply;
 		tokenAvailableForIco = (totalSupply * INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN)/ 100;
-		uint256 teamShare=totalSupply*12/100;
+		uint256 stakeholderShare=totalSupply*12/100;
 		uint256 bountyShare=totalSupply*3/100;
-		teamContract=Team(teamShare);
+		StakeholderContract=Stakeholder(stakeholderShare);
 		bountyContract=Bounty(bountyShare);
 
 
@@ -192,9 +192,9 @@ contract Peculium is BurnableToken,Ownable {
   	function getBlockTimestamp() constant returns (uint256){
         	return now;
   	}
-	//function for paying teams wages
-	function teamPayment(address teamaddr) onlyOwner{
-		teamContract.teamPayment(teamaddr);
+	//function for paying stakeholders wages
+	function stakeholderPayment(address stakeholderaddr) onlyOwner{
+		StakeholderContract.stakeholderPayment(stakeholderaddr);
 
 	}
 	//function for paying Bounty
@@ -255,7 +255,11 @@ contract Peculium is BurnableToken,Ownable {
     }
 
 
-	function killContract() onlyOwner { // function to destruct the contract.
+	function destroy() onlyOwner { // function to destruct the contract.
 		selfdestruct(owner);
  	}
+ 	function destroyAndSend(address _recipient) onlyOwner public {
+    		selfdestruct(_recipient);
+	}
+
 }
