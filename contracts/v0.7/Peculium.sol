@@ -24,7 +24,7 @@ contract Peculium is BurnableToken,Ownable {
     	uint256 public decimals = 8;
         uint256 public constant MAX_SUPPLY_NBTOKEN   = 20000000000*10**8; 
 	uint256 public constant START_PRE_ICO_TIMESTAMP   =1509494400; //start date of PRE_ICO 
-        uint256 public constant START_ICO_TIMESTAMP=START_PRE_ICO_TIMESTAMP+ 10* 1 days ;
+        uint256 public constant START_ICO_TIMESTAMP= START_PRE_ICO_TIMESTAMP + ( 10 * 1 days) ;
 	uint256 public constant END_ICO_TIMESTAMP   =1514764800; //end date of ICO 
 	uint256 public constant BONUS_FIRST_THREE_HOURS_PRE_ICO = 35 ; // 35%
 	uint256 public constant BONUS_FIRST_TEN_DAYS_PRE_ICO = 30 ; // 35% 
@@ -180,13 +180,6 @@ contract Peculium is BurnableToken,Ownable {
 	
 	}
 
-/*
-	function buyTokenPostIco(address toAddress, uint256 _vamounts) payable SaleNotStopped NotEmpty {
-		uint256 amountTo_Send = _vamounts*rate*10**decimals;
-			sendTokenUpdate(toAddress,amountTo_Send);
-	}
-
-*/
 	function updateReserveToken() onlyOwner{
 		require(now>END_ICO_TIMESTAMP);
 		reserveToken.add(tokenAvailableForIco);
