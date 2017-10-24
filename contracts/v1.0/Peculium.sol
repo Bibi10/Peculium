@@ -35,6 +35,7 @@ contract Peculium is BurnableToken,Ownable {
 	uint256 public amount;
 	uint256 public reserveToken;
 	uint256 public tokenAvailableForPrivateSale;
+	
 	//Boolean to allow or not the sale of tokens
 	bool public sales_stopped = false;	
 	bool public isFinalized = false;
@@ -47,12 +48,17 @@ contract Peculium is BurnableToken,Ownable {
 	  
 	  event PrivateSalesSale(address receiverToken,uint256 nbTokenSend);
 	  
+	  event AirdropOne(address airdropaddress,uint256 nbTokenSendAirdrop);
+	  event AirdropList(address[] airdropListAddress,uint256[] listTokenSendAirdrop);
+	  
 	  event Finalized();
 	  event Stopsale();
 	  event Restartsale();
 	  
  	  event FrozenFunds(address target, bool frozen);
     	  event Froze(address msgAdd, bool freeze);
+	
+	  event CancelledAirDrop(uint256 Total,uint256 AirdropsamountTotal);
 	
 	  mapping(address => bool) balancesCanSell;
    
@@ -66,6 +72,8 @@ contract Peculium is BurnableToken,Ownable {
 		balances[owner] = amount;
 		balancesCanSell[owner] = true; // The owner need to sell token for the private sale and for the preICO, ICO.
 		tokenAvailableForPrivateSale = (amount.mul(INITIAL_PERCENT_PRIVATE_SALE)).div(100); 
+		Airdropsamount = SafeMath.mul(50000000,(10**8));
+
 		
 		dateStartContract=now;
 		dateDefrost = dateStartContract + 12 weeks; // everybody can defrost his own token after 4 months
@@ -127,6 +135,32 @@ contract Peculium is BurnableToken,Ownable {
 	                    PrivateSalesSale(beneficiary,amountTo_Send);
 	
 	}	
+	
+	function airdropsTokens(address[] _vaddr, uint256[] _vamounts) onlyOwner NotEmpty{
+		require (Airdropsamount >0);
+		require ( _vaddr.length == _vamounts.length );
+		//Looping into input arrays to assign target amount to each given address 
+		uint256 amountToSendTotal = 0;
+		for (uint256 indexTest=0; indexTest<_vaddr.length; indexTest++) // We first test that we have enough token to send
+		{
+			amountToSendTotal.add(_vamounts[indexTest].mul(10 ** decimals)); 
+		}
+		
+		require(amountToSendTotal>Airdropsamount); // If no enough token, cancel the sell 
+		
+		for (uint256 index=0; index<_vaddr.length; index++) {
+			address toAddress = _vaddr[index];
+			uint256 amountTo_Send = _vamounts[index].mul(10 ** decimals);
+		
+	                transfer(toAddress,amountTo_Send);
+			
+	                amount.sub(amountTo_Send);		
+			Airdropsamount.sub(amountTo_Send);
+			AirdropOne(toAddress,amountTo_Send);
+		}
+		AirdropList(_vaddr,_vamounts);
+	      
+	}
 	
 	/* Approves and then calls the receiving contract */
 	function approveAndCall(address _spender, uint256 _value, bytes _extraData) returns (bool success) {
