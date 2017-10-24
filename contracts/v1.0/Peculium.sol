@@ -26,7 +26,7 @@ contract Peculium is BurnableToken,Ownable {
 	
 	uint256 public rate;
 	
-	uint256 public dateLaunchContract;
+	uint256 public dateStartContract;
 	uint256 public dateDefrost;
 	
 	uint256 totalwei;
@@ -42,15 +42,20 @@ contract Peculium is BurnableToken,Ownable {
 	uint256 public tokenAvailableForIco;
 
 	  event NewRate(uint256 rateUpdate);
+	  event ReceiveEther(uint256 nbEther);
+	  event SendEther(address receiver,uint256 nbEther);
+	  
+	  event PrivateSalesSale(address receiverToken,uint256 nbTokenSend);
+	  
 	  event Finalized();
 	  event Stopsale();
 	  event Restartsale();
-	  event Finalized();
+	  
+ 	  event FrozenFunds(address target, bool frozen);
+    	  event Froze(address msgAdd, bool freeze);
 	
 	  mapping(address => bool) balancesCanSell;
-    event FrozenFunds(address target, bool frozen);
-
-
+   
 	//Constructor
 	function Peculium() {
 
@@ -59,50 +64,67 @@ contract Peculium is BurnableToken,Ownable {
 		totalSupply = MAX_SUPPLY_NBTOKEN;
 		amount = totalSupply;
 		balances[owner] = amount;
-		balancesCanSell[owner] = true;
+		balancesCanSell[owner] = true; // The owner need to sell token for the private sale and for the preICO, ICO.
 		tokenAvailableForPrivateSale = (amount.mul(INITIAL_PERCENT_PRIVATE_SALE)).div(100); 
-		//tokenAvailableForIco = (amount.mul(INITIAL_PERCENT_ICO_TOKEN_TO_ASSIGN)).div(100);
 		
-		dateLaunchContract=now;
-		dateDefrost = dateLaunchContract + 12 weeks;
+		dateStartContract=now;
+		dateDefrost = dateStartContract + 12 weeks; // everybody can defrost his own token after 4 months
 
 	}
 	
 	function DefrostToken() public {
 		require(now>dateDefrost);
 		balancesCanSell[msg.sender]=true;
+		Froze(msg.sender,true);
 	}
 		
-	function transferToken(address _to,uint256 _value) public {
+	function transfer(address _to, uint256 _value) public returns (bool) {
 		require(balancesCanSell[msg.sender]);
 		
-		transfer(_to,_value);
+		return BasicToken.transfer(_to,_value);
 	}
-	function transferTokenFrom(address _from, address _to, uint256 _value) public {
+	function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
 		require(balancesCanSell[msg.sender]);
 		
-		transferFrom(_from,_to,_value);
+		return StandardToken.transferFrom(_from,_to,_value);
 	
 	
+	}
+	
+	function() payable {
+		receiveEtherFormOwner();
 	}
 	
 	function receiveEtherFormOwner() payable onlyOwner {
 		totalwei.add(msg.value);
+		ReceiveEther(msg.value);
 			
 	}
-	function sendEtherToOwner() onlyOwner {
+	
+	function sendEtherToOwner(uint256 moneyToSend) onlyOwner {
+			uint256 moneyToSendEther = moneyToSend.div(1 ether);
+			if(moneyToSendEther > 0.01 ether){
+				owner.transfer(moneyToSendEther);
+		      		SendEther(owner,moneyToSendEther);				
+				}
+			}
+	
+	function sendAllEtherToOwner() onlyOwner {
 		uint256 moneyEther = (this.balance).div(1 ether);
-		if(moneyEther > 0.01 ether){
+		if(moneyEther > 0.01 ether){ // we keep some ether to pay the transaction in gas
 		      owner.transfer(this.balance);
 		      totalwei.sub(this.balance);
+		      SendEther(owner,this.balance);
 		      }
+		
 	}
 
-	function buyTokens(address beneficiary, uint256 amountTo_Send) onlyOwner SaleNotStopped NotEmpty PrivateSale_Fund_NotEmpty
+	function sendTokensPrivateSale(address beneficiary, uint256 amountTo_Send) onlyOwner SaleNotStopped NotEmpty PrivateSale_Fund_NotEmpty
 	{
 	                    amount.sub(amountTo_Send);
 	                    tokenAvailableForPrivateSale.sub(amountTo_Send);
-	                    transferToken(beneficiary,amountTo_Send);
+	                    transfer(beneficiary,amountTo_Send);
+	                    PrivateSalesSale(beneficiary,amountTo_Send);
 	
 	}	
 	
