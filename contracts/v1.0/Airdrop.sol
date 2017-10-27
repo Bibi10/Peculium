@@ -2,11 +2,6 @@
 Contract for the airdrop of the Peculium campaign
 */
 
-
-import "./SafeMath.sol";
-
-import "./Ownable.sol";
-
 import "./Peculium.sol";
 
 pragma solidity ^0.4.15;
