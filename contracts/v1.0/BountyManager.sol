@@ -1,8 +1,6 @@
 /*
 This Token Contract pay the bounty holder of the Peculium campaign
 .*/
-import "./SafeMath.sol";
-import "./Ownable.sol";
 
 import "./Peculium.sol";
 
