@@ -73,15 +73,15 @@ contract BountyManager is Ownable  {
 	
 	}
 	
-	function allocateManager() onlyOwner Initialize BountyManagerInit 
-	{ // Allocate pecul for the Bounty manager, after this call, the manager can take the token by calling transferFrom 
+	function transferManager() onlyOwner Initialize BountyManagerInit 
+	{ // Transfer pecul for the Bounty manager
 		
 		require(now > payday);
 		
 		if(First_pay_bountymanager==true)
 		{
 
-			pecul.approve(bountymanager,first_pay);
+			pecul.transfer(bountymanager,first_pay);
 			payday = payday + 4 weeks;
 			First_pay_bountymanager==false;
 			FirstPaySend(first_pay,bountymanager);
@@ -91,7 +91,7 @@ contract BountyManager is Ownable  {
 		if(First_pay_bountymanager==false && nbMonthsPay < 6)
 		{
 
-			pecul.approve(bountymanager,montly_pay);
+			pecul.transfer(bountymanager,montly_pay);
 			payday = payday + 4 weeks;
 			nbMonthsPay.add(1);
 			MonthlyPaySend(montly_pay,bountymanager);
