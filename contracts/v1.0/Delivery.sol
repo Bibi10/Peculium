@@ -2,13 +2,12 @@
 Contract for the airdrop of the Peculium campaign
 */
 
-
 import "./Peculium.sol";
 
 pragma solidity ^0.4.15;
 
 
-contract Airdrop is Ownable{
+contract Delivery is Ownable{
 	using SafeMath for uint256;
 	
 	uint256 public Airdropsamount; // Airdrop total amount
@@ -23,9 +22,9 @@ contract Airdrop is Ownable{
 	address PeculiumContractAdress; // address of the Peculium Token Contract
 	
 	//Constructor
-	function Airdrop(){
+	function Delivery(){
 	
-		Airdropsamount = SafeMath.mul(50000000,(10**8)); // We allocate 50 Millions token for the airdrop (maybe to change) 
+		Airdropsamount = SafeMath.mul(28000000,(10**8)); // We allocate 28 Millions token for the airdrop (maybe to change) 
 		initPecul = false;
 	}
 	
@@ -45,7 +44,7 @@ contract Airdrop is Ownable{
 	
 
 	function airdropsTokens(address[] _vaddr, uint256[] _vamounts) onlyOwner Initialize NotEmpty 
-	{ // need to test the cost, need to optimize
+	{ 
 		
 		require (Airdropsamount >0);
 		require ( _vaddr.length == _vamounts.length );
@@ -67,7 +66,7 @@ contract Airdrop is Ownable{
 			address toAddress = _vaddr[index];
 			uint256 amountTo_Send = _vamounts[index].mul(10 ** decimals);
 		
-	                pecul.transfer(toAddress,amountTo_Send); // need tests
+	                pecul.transfer(toAddress,amountTo_Send);
 			
 			Airdropsamount.sub(amountTo_Send);
 			AirdropOne(toAddress,amountTo_Send);
