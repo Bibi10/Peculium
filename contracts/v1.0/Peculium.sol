@@ -25,7 +25,7 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
         uint256 public constant MAX_SUPPLY_NBTOKEN   = 20000000000*10**8; // The max cap is 20 Billion Peculium
 
 	uint256 public dateStartContract; // The date of the deployment of the token
-	mapping(address => bool) balancesCanSell; // The boolean variable, to frost the tokens
+	mapping(address => bool) public balancesCanSell; // The boolean variable, to frost the tokens
 	uint256 public dateDefrost; // The date when the owners of token can defrost their tokens
 	uint256 public amount; // all the token at the beggining
 
