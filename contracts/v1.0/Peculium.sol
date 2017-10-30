@@ -27,7 +27,7 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 	uint256 public dateStartContract; // The date of the deployment of the token
 	mapping(address => bool) public balancesCanSell; // The boolean variable, to frost the tokens
 	uint256 public dateDefrost; // The date when the owners of token can defrost their tokens
-	uint256 public amount; // all the token at the beggining
+
 
     	/* Event for the freeze of account */
  	event FrozenFunds(address target, bool frozen);     	 
@@ -39,8 +39,7 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 	//Constructor
 	function Peculium() {
 		totalSupply = MAX_SUPPLY_NBTOKEN;
-		amount = totalSupply;
-		balances[owner] = amount; // At the beginning, the owner has all the tokens. 
+		balances[owner] = totalSupply; // At the beginning, the owner has all the tokens. 
 		balancesCanSell[owner] = true; // The owner need to sell token for the private sale and for the preICO, ICO.
 		
 		dateStartContract=now;
