@@ -18,6 +18,7 @@ contract Delivery is Ownable{
 
 	event AirdropOne(address airdropaddress,uint256 nbTokenSendAirdrop); // Event for one airdrop
 	event AirdropList(address[] airdropListAddress,uint256[] listTokenSendAirdrop); // Event for all the airdrop
+	event InitializedToken(address contractToken);
 	
 	//Constructor
 	function Delivery(){
@@ -36,6 +37,7 @@ contract Delivery is Ownable{
 		pecul = Peculium(peculAdress);
 		decimals = pecul.decimals();
 		initPecul = true;
+		InitializedToken(peculAdress);
 		
 	}
 	

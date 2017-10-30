@@ -14,20 +14,19 @@ contract BountyManager is Ownable  {
 	
 	/*Variables about the token contract */	
 	Peculium public pecul; // The Peculium token
-	address PeculiumContractAdress; // address of the Peculium token address
-	bool initPecul; // boolean to know if the Peculium token address has been init
+	bool public initPecul; // boolean to know if the Peculium token address has been init
 	
 	event InitializedToken(address contractToken);
 	
 	/*Variables about the bounty manager */
-	address bountymanager ; // address of the bounty manager 
+	address public bountymanager ; // address of the bounty manager 
 	uint256 public bountymanagerShare; // nb token for the bountymanager
-	bool First_pay_bountymanager; // boolean to test if the first pay has been send to the bountymanager
-	uint256 first_pay; // pourcent of the first pay rate
-	uint256 montly_pay; // pourcent of the montly pay rate
-	bool bountyInit; // boolean to know if the bounty address has been init
-	uint256 payday; // Day when the bounty manager is paid
-	uint256 nbMonthsPay; // The montly pay is sent for 6 months
+	bool public First_pay_bountymanager; // boolean to test if the first pay has been send to the bountymanager
+	uint256 public first_pay; // pourcent of the first pay rate
+	uint256 public montly_pay; // pourcent of the montly pay rate
+	bool public bountyInit; // boolean to know if the bounty address has been init
+	uint256 public payday; // Day when the bounty manager is paid
+	uint256 public nbMonthsPay; // The montly pay is sent for 6 months
 
 	event InitializedManager(address ManagerAdd);
 	event FirstPaySend(uint256 first,address receiver);
@@ -56,11 +55,10 @@ contract BountyManager is Ownable  {
 	function InitPeculiumAdress(address peculAdress) onlyOwner 
 	{ // We init the address of the token
 	
-		PeculiumContractAdress = peculAdress;
-		pecul = Peculium(PeculiumContractAdress);
+		pecul = Peculium(peculAdress);
 		payday = pecul.dateDefrost();
 		initPecul = true;
-		InitializedToken(PeculiumContractAdress);
+		InitializedToken(peculAdress);
 	
 	}
 	
