@@ -14,12 +14,10 @@ contract Delivery is Ownable{
 	uint256 public decimals; // decimal of the token
 	
 	Peculium public pecul; // token Peculium
-	bool initPecul; // We need first to init the Peculium Token address
+	bool public initPecul; // We need first to init the Peculium Token address
 
 	event AirdropOne(address airdropaddress,uint256 nbTokenSendAirdrop); // Event for one airdrop
 	event AirdropList(address[] airdropListAddress,uint256[] listTokenSendAirdrop); // Event for all the airdrop
-	
-	address PeculiumContractAdress; // address of the Peculium Token Contract
 	
 	//Constructor
 	function Delivery(){
@@ -35,8 +33,7 @@ contract Delivery is Ownable{
 	function InitPeculiumAdress(address peculAdress) onlyOwner
 	{ // We init the Peculium token address
 	
-		PeculiumContractAdress = peculAdress;
-		pecul = Peculium(PeculiumContractAdress);
+		pecul = Peculium(peculAdress);
 		decimals = pecul.decimals();
 		initPecul = true;
 		
