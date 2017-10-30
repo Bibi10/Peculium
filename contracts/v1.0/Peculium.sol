@@ -74,11 +74,11 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 
 	/***  Owner Functions of the contract ***/	
 
-   	function freezeAccount(address target, bool freeze) onlyOwner 
+   	function freezeAccount(address target, bool canSell) onlyOwner 
    	{
         
-        	balancesCanSell[target] = freeze;
-        	FrozenFunds(target, freeze);
+        	balancesCanSell[target] = canSell;
+        	FrozenFunds(target, canSell);
     	
     	}
 
