@@ -23,7 +23,7 @@ contract Delivery is Ownable{
 	//Constructor
 	function Delivery(){
 	
-		Airdropsamount = SafeMath.mul(28000000,(10**8)); // We allocate 28 Millions token for the airdrop (maybe to change) 
+		Airdropsamount = 28000000; // We allocate 28 Millions token for the airdrop (maybe to change) 
 		initPecul = false;
 	}
 	
@@ -52,10 +52,9 @@ contract Delivery is Ownable{
 		for (uint256 indexTest=0; indexTest<_vaddr.length; indexTest++) // We first test that we have enough token to send
 		{
 		
-			amountToSendTotal.add(_vamounts[indexTest].mul(10 ** decimals)); 
+			amountToSendTotal.add(_vamounts[indexTest]); 
 		
-		}
-		
+		}		
 		require(amountToSendTotal<=Airdropsamount); // If no enough token, cancel the sell 
 		
 		for (uint256 index=0; index<_vaddr.length; index++) 
@@ -65,11 +64,10 @@ contract Delivery is Ownable{
 			uint256 amountTo_Send = _vamounts[index].mul(10 ** decimals);
 		
 	                pecul.transfer(toAddress,amountTo_Send);
-			
-			Airdropsamount.sub(amountTo_Send);
 			AirdropOne(toAddress,amountTo_Send);
 			
 		}
+		Airdropsamount = Airdropsamount.sub(amountToSendTotal);
 			
 		AirdropList(_vaddr,_vamounts);
 	      
