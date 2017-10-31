@@ -86,7 +86,7 @@ contract BountyManager is Ownable  {
 		
 		}
 
-		if(First_pay_bountymanager==false && nbMonthsPay < 6)
+		else if(First_pay_bountymanager==false && nbMonthsPay < 6)
 		{
 
 			pecul.transfer(bountymanager,montly_pay);
