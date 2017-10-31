@@ -43,7 +43,7 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 		balancesCanSell[owner] = true; // The owner need to sell token for the private sale and for the preICO, ICO.
 		
 		dateStartContract=now;
-		dateDefrost = dateStartContract + 8 weeks + 24 days; // everybody can defrost his own token after the 25 january 2018
+		dateDefrost = dateStartContract + 85 days; // everybody can defrost his own token after the 25 january 2018 (85 days after 1 November)
 
 	}
 
