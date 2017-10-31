@@ -81,7 +81,7 @@ contract BountyManager is Ownable  {
 
 			pecul.transfer(bountymanager,first_pay);
 			payday = payday.add( 4 weeks);
-			First_pay_bountymanager==false;
+			First_pay_bountymanager=false;
 			FirstPaySend(first_pay,bountymanager);
 		
 		}
