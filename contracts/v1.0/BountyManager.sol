@@ -75,7 +75,19 @@ contract BountyManager is Ownable  {
 	{ // Transfer pecul for the Bounty manager
 		
 		require(now > payday);
+	
+		if(First_pay_bountymanager==false && nbMonthsPay < 6)
+		{
+
+			pecul.transfer(bountymanager,montly_pay);
+			payday = payday.add(31 days);
+			nbMonthsPay=nbMonthsPay.add(1);
+			MonthlyPaySend(montly_pay,bountymanager);
 		
+		}
+		
+	
+	
 		if(First_pay_bountymanager==true)
 		{
 
@@ -86,16 +98,8 @@ contract BountyManager is Ownable  {
 		
 		}
 
-		else if(First_pay_bountymanager==false && nbMonthsPay < 6)
-		{
-
-			pecul.transfer(bountymanager,montly_pay);
-			payday = payday.add(31 days);
-			nbMonthsPay=nbMonthsPay.add(1);
-			MonthlyPaySend(montly_pay,bountymanager);
 		
-		}
-		
+			
 	}
 		/***  Modifiers of the contract ***/
 	
