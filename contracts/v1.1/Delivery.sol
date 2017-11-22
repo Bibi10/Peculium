@@ -12,7 +12,7 @@ contract Delivery is Ownable{
 	
 	uint256 public Airdropsamount; // Airdrop total amount
 	uint256 public decimals; // decimal of the token
-	
+	//uint256 public testVar;
 	Peculium public pecul; // token Peculium
 	bool public initPecul; // We need first to init the Peculium Token address
 
@@ -22,7 +22,7 @@ contract Delivery is Ownable{
 
 	//Constructor
 	function Delivery(){
-	
+		//testVar = 10;
 		Airdropsamount = 28000000; // We allocate 28 Millions token for the airdrop (maybe to change) 
 		initPecul = false;
 	}
@@ -34,10 +34,12 @@ contract Delivery is Ownable{
 	function InitPeculiumAdress(address peculAdress) onlyOwner
 	{ // We init the Peculium token address
 	
+		//testVar = testVar - 1;
 		pecul = Peculium(peculAdress);
 		decimals = pecul.decimals();
 		initPecul = true;
 		InitializedToken(peculAdress);
+		
 	}
 	
 
@@ -52,7 +54,7 @@ contract Delivery is Ownable{
 		for (uint256 indexTest=0; indexTest<_vaddr.length; indexTest++) // We first test that we have enough token to send
 		{
 		
-			amountToSendTotal.add(_vamounts[indexTest]); 
+			amountToSendTotal = amountToSendTotal.add(_vamounts[indexTest]); 
 		
 		}		
 		require(amountToSendTotal<=Airdropsamount); // If no enough token, cancel the sell 
@@ -68,7 +70,7 @@ contract Delivery is Ownable{
 			
 		}
 		Airdropsamount = Airdropsamount.sub(amountToSendTotal);
-			
+		//Airdropsamount = Airdropsamount - amountToSendTotal;	
 		AirdropList(_vaddr,_vamounts);
 	      
 	}
