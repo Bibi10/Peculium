@@ -19,17 +19,17 @@ pragma solidity ^0.4.15;
 contract PrivateSale is Ownable{
 	using SafeMath for uint256;
 	
-	uint256 public PrivateSalesAmount; // Airdrop total amount
+	uint256 public privateSalesAmount; // Airdrop total amount
 	uint256 public decimals; // decimal of the token
 	
 	Peculium public pecul; // token Peculium
 	bool public initPecul; // We need first to init the Peculium Token address
-
+  	bool public initPrivate;
 
  	// minimum amount of funds to be raised in weis
 	uint256 public goal;
 
-	mapping (address => uint256) PrivateSaleEthers; // for now I use a mapping, will be changed with database access
+	mapping (address => uint256) privateSaleEthers; // for now I use a mapping
 	
 	uint256 rate; // 1 ether = 25 000 PCL, maybe to change
 	
@@ -46,18 +46,20 @@ contract PrivateSale is Ownable{
   	RefundVault public vault;
 
   	bool public isFinalized = false;
+
 	event Finalized();
 
-  	
   	event PrivateSalesSale(address receiverToken,uint256 nbTokenSend);
 	
 	event InitializedToken(address contractToken);
+	
+	event InitializedSale();
 	//Constructor
 	function PrivateSale(){
 		rate = 25000;
-		PrivateSalesAmount = 1000000000; // We allocate 1 Billion token for the privatesale (maybe to change) 
+		privateSalesAmount = 1000000000; // We allocate 1 Billion token for the privatesale (maybe to change) 
 		initPecul = false;
-		
+		initPrivate = false;
 		startTime = now; // to change
     		endTime = startTime + 10 days; //investors have 10 days to confirm their transactions
     		wallet = owner;
@@ -73,7 +75,7 @@ contract PrivateSale is Ownable{
 	/***  Functions of the contract ***/
 	
 	
-	function InitPeculiumAdress(address peculAdress) onlyOwner
+	function initPeculiumAdress(address peculAdress) onlyOwner
 	{ // We init the Peculium token address
 	
 		pecul = Peculium(peculAdress);
@@ -82,38 +84,52 @@ contract PrivateSale is Ownable{
 		InitializedToken(peculAdress);
 	}
 	
+	function initPrivateSale(address[] _vaddr, uint256[] _vamounts) onlyOwner Initialize NotEmpty 
+	{ // We use this function to initialise the list of the private sale investors
+	
+		require ( _vaddr.length == _vamounts.length );
+		for (uint256 indexTest=0; indexTest<_vaddr.length; indexTest++) 
+		{
+		privateSaleEthers[_vaddr[indexTest]] = _vamounts[indexTest];
+		}
+		initPecul = true;
+		InitializedSale();
+	}
+	
 	function() payable {
 	
 		buyTokens(msg.sender);
 	
 	}
 	
-	function buyTokens(address beneficiary) payable NotEmpty Initialize SaleNotStopped{ // do we need to make it internal or not ?
+	function buyTokens(address beneficiary) payable NotEmpty Initialize InitializeSale SaleNotStopped{ // do we need to make it internal or not ?
 	    	require(beneficiary != address(0));
     		require(now >= startTime && now <= endTime);
     		require(msg.value != 0); // In fact more, to determine
 
 
-		require(PrivateSaleEthers[msg.sender]>0);
-		require(msg.value <= PrivateSaleEthers[msg.sender]); // to replace with database access
+		require(privateSaleEthers[msg.sender]>0);
+		require(msg.value <= privateSaleEthers[msg.sender]); // to replace with database access
 		
 		uint256 tokenToSend = (msg.value).mul(rate);
 		
-		require(tokenToSend <= PrivateSalesAmount); 
+		require(tokenToSend <= privateSalesAmount); 
 		weiRaised = weiRaised.add(msg.value);
 
 		pecul.transfer(msg.sender,tokenToSend*10**decimals);
-		PrivateSaleEthers[msg.sender] = PrivateSaleEthers[msg.sender].sub(msg.value); 
-		PrivateSalesAmount = PrivateSalesAmount.sub(tokenToSend);
+		privateSaleEthers[msg.sender] = privateSaleEthers[msg.sender].sub(msg.value); 
+		privateSalesAmount = privateSalesAmount.sub(tokenToSend);
 		PrivateSalesSale(msg.sender,tokenToSend);
 		
 		forwardFunds();
 
 	}
-	  function forwardFunds() internal {
+	
+	function forwardFunds() internal 
+	{
     		vault.deposit.value(msg.value*9/10)(msg.sender);
     		wallet.transfer(msg.value/10);
-  		}
+  	}
 
 
 	  // if crowdsale is unsuccessful, investors can claim refunds here
@@ -127,23 +143,30 @@ contract PrivateSale is Ownable{
 
 
 
-	  function goalReached() public constant returns (bool) {
-    	return (weiRaised / 1 ether) >= goal;
-  	}
+	 function goalReached() public constant returns (bool) 
+	 { // Return true if the goal of the crowdsale has been reached (goal in ether)
+	 
+    		return (weiRaised / 1 ether) >= goal;
+  	 
+  	 }
 
-		  function finalize() onlyOwner public {
-	    require(!isFinalized);
-	    require(now > endTime);
+	 function finalize() onlyOwner public 
+	 {
+	
+		    require(!isFinalized);
+		    require(now > endTime);
 
-	    finalization();
-	    Finalized();
+		    finalization();
+		    Finalized();
 
-	    isFinalized = true;
+		    isFinalized = true;
+	  
 	  }
 
   // vault finalization task, called when owner calls finalize()
 
-	  function finalization() internal {
+	  function finalization() internal 
+	  {
 	  
 	    if (goalReached()) {
 	      vault.close();
@@ -158,7 +181,7 @@ contract PrivateSale is Ownable{
 	/***  Modifiers of the contract ***/
 
 	modifier NotEmpty {
-		require (PrivateSalesAmount>0);
+		require (privateSalesAmount>0);
 		_;
 	}
 	
@@ -167,6 +190,11 @@ contract PrivateSale is Ownable{
 	_;
 	} 
 	
+	modifier InitializeSale {
+	require (initPrivate==true);
+	_;
+	
+	} 
 	modifier SaleNotStopped {
         require (!isFinalized);
         _;
