@@ -1,5 +1,5 @@
 /*
-This Token Contract pay the stakeholder
+This Token Contract pay the holder and the team
 .*/
 
 
