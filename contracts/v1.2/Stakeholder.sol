@@ -15,33 +15,30 @@ contract Stakeholder is Ownable {
 	uint256 public decimals; // decimal of the token
 	bool public initPecul; // We need first to init the Peculium Token address
 	
+	uint256 pay_day;
 	
 	uint256 amountStakeHolder;
-	
-	enum PaymentMode { First, Second }
 	
 	  struct Member
 	{
 	   bytes32 name;
 	   address eth_address;
 	   uint256 amount;
-	   uint256 nb_payment;
-	   PaymentMode pay_system;
+	   bool pay_system; // false for classic system, true for bonus system
 	   uint256 nb_payment;
 	   bool approval;
 	}
 	
 	Member[] members;
+
+	//members.push(Member{name:mohamed,eth_address:Ox1,amount:10,pay_system:First,nb_payment:0,approval:true}); // added by hand
 	
 	event InitializedToken(address contractToken);	
 		
 	//Constructor
 	function Stakeholder(uint256 amountShared) {
-		amountStakeHolder = amountShared;
-		
-		Member Mohamed = Member(mohamed,Ox1,10,First,0,true) //added by hand
-		
-		members.push(Mohamed) // added by hand
+		amountStakeHolder = amountShared;		
+	
 	}
 	
 	function InitPeculiumAdress(address peculAdress) onlyOwner
@@ -51,17 +48,17 @@ contract Stakeholder is Ownable {
 		decimals = pecul.decimals();
 		initPecul = true;
 		InitializedToken(peculAdress);
-		uint256 pay_day = now;
+		pay_day = now;
 		
 	}
 
 	function Change_approvePay(address eth_No_Approve,bool choice) onlyOwner
 	{
-		for(uint256 i=0; i<members.size;i++)
+		for(uint256 i=0; i<members.length;i++)
 		{
 			if(members[i].eth_address==eth_No_Approve)
 			{
-				members[i].approval = choise;
+				members[i].approval = choice;
 			}
 		}
 	}
@@ -69,7 +66,7 @@ contract Stakeholder is Ownable {
 	function Pay() onlyOwner
 	{
 	
-		for(uint256 i=0; i<members.size;i++)
+		for(uint256 i=0; i<members.length;i++)
 		{
 			require(pay_day<now);
 			sendPayment(members[i]);
@@ -81,11 +78,11 @@ contract Stakeholder is Ownable {
 	function sendPayment(Member holder) internal
 	{
 		require(holder.approval==true);
-		if(holder.pay_system==First)
+		if(holder.pay_system==false)
 		{
 			sendPayment_First(holder);
 		}
-		else if(holder.pay_system==Second)
+		else if(holder.pay_system==true)
 		{
 			sendPayment_Second(holder);
 		}
@@ -96,15 +93,15 @@ contract Stakeholder is Ownable {
 		if(holder.nb_payment==0)
 		{
 		
-		first_amount = (40*holder.amount).div(100);
-		pecul.transfer(holder.eth_address,first_amount)
+		uint256 first_amount = 40*holder.amount/100;
+		pecul.transfer(holder.eth_address,first_amount);
 		 
 		}
 		else if(holder.nb_payment>0 && holder.nb_payment<6)
 		{
 		
-		month_amount = (10*holder.amount).div(100);
-		pecul.transfer(holder.eth_address,month_amount)
+		uint256 month_amount = 10*holder.amount/100;
+		pecul.transfer(holder.eth_address,month_amount);
 		
 		}
 	
@@ -116,20 +113,19 @@ contract Stakeholder is Ownable {
 	{
 		if( holder.nb_payment<6)
 		{
-		
-		month_amount = (8.5*holder.amount).div(100);
-		pecul.transfer(holder.eth_address,month_amount)
+		 
+		uint256 month_amount = 17*holder.amount/200;
+		pecul.transfer(holder.eth_address,month_amount);
 		
 		}
 		
 		if(holder.nb_payment==5)
 		{
-		bonus_amount = (10*holder.amount).div(100);
-		pecul.transfer(holder.eth_address,bonus_amount)
+		uint256 bonus_amount = 10*holder.amount/100;
+		pecul.transfer(holder.eth_address,bonus_amount);
 		}
 	
 	
 	holder.nb_payment = holder.nb_payment + 1;
 	}
-
-
+}
