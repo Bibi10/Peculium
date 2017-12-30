@@ -21,24 +21,24 @@ contract Stakeholder is Ownable {
 	
 	  struct Member
 	{
-	   bytes32 name;
+	   string name;
 	   address eth_address;
 	   uint256 amount;
 	   bool pay_system; // false for classic system, true for bonus system
 	   uint256 nb_payment;
-	   bool approval;
+	   bool approvalR;
 	}
-	
-	Member[] members;
 
-	//members.push(Member{name:mohamed,eth_address:Ox1,amount:10,pay_system:First,nb_payment:0,approval:true}); // added by hand
+	Member[] members; 
 	
 	event InitializedToken(address contractToken);	
 		
 	//Constructor
 	function Stakeholder(uint256 amountShared) {
 		amountStakeHolder = amountShared;		
-	
+
+		members.push(Member("mohamed",0x0,10,true,0,true));
+		
 	}
 	
 	function InitPeculiumAdress(address peculAdress) onlyOwner
@@ -58,7 +58,7 @@ contract Stakeholder is Ownable {
 		{
 			if(members[i].eth_address==eth_No_Approve)
 			{
-				members[i].approval = choice;
+				members[i].approvalR = choice;
 			}
 		}
 	}
@@ -77,7 +77,7 @@ contract Stakeholder is Ownable {
 	
 	function sendPayment(Member holder) internal
 	{
-		require(holder.approval==true);
+		require(holder.approvalR==true);
 		if(holder.pay_system==false)
 		{
 			sendPayment_First(holder);
