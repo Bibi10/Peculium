@@ -52,11 +52,11 @@ contract Stakeholder is Ownable {
 		
 	}
 
-	function Change_approvePay(address eth_No_Approve,bool choice) onlyOwner
+	function Change_approvePay(address eth_Change_Approve,bool choice) onlyOwner
 	{
 		for(uint256 i=0; i<members.length;i++)
 		{
-			if(members[i].eth_address==eth_No_Approve)
+			if(members[i].eth_address==eth_Change_Approve)
 			{
 				members[i].approvalR = choice;
 			}
