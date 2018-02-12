@@ -1,21 +1,21 @@
 {
-  "name": "peculium",
-  "version": "0.0.1",
-  "description": "cryptocurrency for epargne ",
+  "name": "peculium-v2",
+  "version": "1.0.0",
+  "license": "MIT",
   "main": "truffle.js",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
-    "test": "truffle test "
+    "test": "scripts/test.sh"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/PeculiumPCL"
+  "devDependencies": {
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.18.0",
+    "babel-preset-stage-3": "^6.17.0",
+    "babel-register": "^6.23.0",
+    "ethereumjs-testrpc": "^4.0.1",
+    "truffle": "^4.0.3"
   },
-  "author": "PculiumPCL",
-  "license": "ISC",
   "dependencies": {
-    "zeppelin-solidity": "^1.2.0"
+    "bignumber.js": "^4.0.1"
   }
 }
