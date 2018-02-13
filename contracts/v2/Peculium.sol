@@ -51,6 +51,11 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 	
 	}
 	
+	function receiveApproval(address,uint256,address,bytes) public
+	{
+		UpgradeTokens();
+	}
+	
 	function UpgradeTokens() public
 	{
 		require(peculOld.totalSupply()>0);
