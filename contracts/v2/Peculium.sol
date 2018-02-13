@@ -32,9 +32,8 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 
 
     	/* Event for the freeze of account */
- 	event FrozenFunds(address target, bool frozen);
 	event ChangedTokens(address changedTarget,uint256 amountToChanged);
-
+	event FrozenFunds(address address_target, bool bool_canSell);
 
    
 	//Constructor
@@ -59,12 +58,11 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 	function UpgradeTokens() public
 	{
 		require(peculOld.totalSupply()>0);
-		require(peculOld.allowance(msg.sender,address(this))>0);
-		
-		uint256 amountChanged = allowance(msg.sender,address(this));
+		uint256 amountChanged = peculOld.allowance(msg.sender,address(this));
+		require(amountChanged>0);
 		peculOld.transferFrom(msg.sender,address(this),amountChanged);
 		peculOld.burn(amountChanged);
-		balances[msg.sender] = balances[msg.sender] + amountChanged;
+		transfer(msg.sender,amountChanged);
 		ChangedTokens(msg.sender,amountChanged);
 		
 	}
