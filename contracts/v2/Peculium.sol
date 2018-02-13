@@ -39,6 +39,7 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 	//Constructor
 	function Peculium() public {
 		totalSupply = MAX_SUPPLY_NBTOKEN;
+		balances[address(this)] = totalSupply; // At the beginning, the contract has all the tokens. 
 	}
 	
 	function InitPeculiumOldAdress(address peculOldAdress) public onlyOwner 
