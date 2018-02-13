@@ -28,7 +28,7 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
     	/* Public variables specific for Peculium */
         uint256 public constant MAX_SUPPLY_NBTOKEN   = 20000000000*10**8; // The max cap is 20 Billion Peculium
 
-	mapping(address => bool) public balancesCanSell; // The boolean variable, to frost the tokens
+	mapping(address => bool) public balancesCannotSell; // The boolean variable, to frost the tokens
 
 
     	/* Event for the freeze of account */
@@ -69,7 +69,7 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 	function transfer(address _to, uint256 _value) public returns (bool) 
 	{ // We overright the transfer function to allow freeze possibility
 	
-		require(balancesCanSell[msg.sender]==false);
+		require(balancesCannotSell[msg.sender]==false);
 		return BasicToken.transfer(_to,_value);
 	
 	}
@@ -77,7 +77,7 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 	function transferFrom(address _from, address _to, uint256 _value) public returns (bool) 
 	{ // We overright the transferFrom function to allow freeze possibility (need to allow before)
 	
-		require(balancesCanSell[msg.sender]==false);	
+		require(balancesCannotSell[msg.sender]==false);	
 		return StandardToken.transferFrom(_from,_to,_value);
 	
 	}
@@ -87,11 +87,10 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
    	function ChangeLicense(address target, bool canSell) public onlyOwner 
    	{
         
-        	balancesCanSell[target] = canSell;
+        	balancesCannotSell[target] = canSell;
         	FrozenFunds(target, canSell);
     	
     	}
-
 
 	/*** Others Functions of the contract ***/	
 	
