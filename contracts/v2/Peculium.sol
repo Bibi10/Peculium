@@ -52,26 +52,6 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 	
 	}
 	
-	function receiveApproval(address,uint256,address,bytes) public returns (bool)
-	{
-		return UpgradeTokens();
-	}
-	
-	function UpgradeTokens() public returns (bool)
-	{
-		require(peculOld.totalSupply()>0);
-		uint256 amountChanged = peculOld.allowance(msg.sender,address(this));
-		require(amountChanged>0);
-		peculOld.transferFrom(msg.sender,address(this),amountChanged);
-		peculOld.burn(amountChanged);
-		balances[address(this)] = balances[address(this)].sub(amountChanged);
-    		balances[msg.sender] = balances[msg.sender].add(amountChanged);
-		Transfer(address(this), msg.sender, amountChanged);
-		ChangedTokens(msg.sender,amountChanged);
-	        return true;
-		
-	}
-
 	/*** Public Functions of the contract ***/	
 				
 	function transfer(address _to, uint256 _value) public returns (bool) 
@@ -100,6 +80,27 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
         	return true;
     	
     	}
+    	
+    		function UpgradeTokens() public returns (bool)
+	{
+		require(peculOld.totalSupply()>0);
+		uint256 amountChanged = peculOld.allowance(msg.sender,address(this));
+		require(amountChanged>0);
+		peculOld.transferFrom(msg.sender,address(this),amountChanged);
+		peculOld.burn(amountChanged);
+		//transfer(msg.sender,amountChanged);
+		balances[address(this)] = balances[address(this)].sub(amountChanged);
+    		balances[msg.sender] = balances[msg.sender].add(amountChanged);
+		Transfer(address(this), msg.sender, amountChanged);
+		ChangedTokens(msg.sender,amountChanged);
+	        return true;
+		
+	}
+	
+		function receiveApproval(address,uint256,address,bytes) public returns (bool)
+	{
+		return UpgradeTokens();
+	}
 
 	/*** Others Functions of the contract ***/	
 	
