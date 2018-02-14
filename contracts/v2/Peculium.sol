@@ -42,13 +42,12 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 		balances[address(this)] = totalSupply; // At the beginning, the contract has all the tokens. 
 	}
 	
-	function InitPeculiumOldAdress(address peculOldAdress) public onlyOwner returns (bool)
+	function InitPeculiumOldAdress(address peculOldAdress) public onlyOwner
 	{ // We init the address of the token
 	
 		peculOld = PeculiumOld(peculOldAdress);
 		initPeculOld = true;
 		InitializedToken(peculOldAdress);
-		return true;
 	
 	}
 	
@@ -72,43 +71,41 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 
 	/***  Owner Functions of the contract ***/	
 
-   	function ChangeLicense(address target, bool canSell) public onlyOwner returns (bool)
+   	function ChangeLicense(address target, bool canSell) public onlyOwner
    	{
         
         	balancesCannotSell[target] = canSell;
         	FrozenFunds(target, canSell);
-        	return true;
     	
     	}
     	
-    		function UpgradeTokens() public returns (bool)
+    		function UpgradeTokens() public
 	{
 		require(peculOld.totalSupply()>0);
 		uint256 amountChanged = peculOld.allowance(msg.sender,address(this));
 		require(amountChanged>0);
 		peculOld.transferFrom(msg.sender,address(this),amountChanged);
 		peculOld.burn(amountChanged);
+
 		balances[address(this)] = balances[address(this)].sub(amountChanged);
     		balances[msg.sender] = balances[msg.sender].add(amountChanged);
 		Transfer(address(this), msg.sender, amountChanged);
 		ChangedTokens(msg.sender,amountChanged);
-	        return true;
 		
 	}
-	
-		function receiveApproval(address _from, uint256 _value, address _tokenContract, bytes _extraData) public returns (bool)
+	    	function receiveApproval(address _user,uint256,address,bytes) public
 	{
 		require(peculOld.totalSupply()>0);
-		uint256 amountChanged = peculOld.allowance(_from,address(this));
+		uint256 amountChanged = peculOld.allowance(_user,address(this));
 		require(amountChanged>0);
-		peculOld.transferFrom(_from,address(this),amountChanged);
+		peculOld.transferFrom(_user,address(this),amountChanged);
 		peculOld.burn(amountChanged);
+
 		balances[address(this)] = balances[address(this)].sub(amountChanged);
-    		balances[_from] = balances[_from].add(amountChanged);
-		Transfer(address(this), _from, amountChanged);
-		ChangedTokens(_from,amountChanged);
-	        return true;
-	
+    		balances[_user] = balances[_user].add(amountChanged);
+		Transfer(address(this), _user, amountChanged);
+		ChangedTokens(_user,amountChanged);
+		
 	}
 
 	/*** Others Functions of the contract ***/	
