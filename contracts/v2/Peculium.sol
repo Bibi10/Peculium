@@ -14,7 +14,6 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 	PeculiumOld public peculOld; // The old Peculium token
 	address public peculOldAdress = 0x53148Bb4551707edF51a1e8d7A93698d18931225; // The address of the old Peculium contract
 
-
 	using SafeMath for uint256; // We use safemath to do basic math operation (+,-,*,/)
 	using SafeERC20 for ERC20Basic; 
 
@@ -83,22 +82,6 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
     		balances[msg.sender] = balances[msg.sender].add(amountChanged);
 		Transfer(address(this), msg.sender, amountChanged);
 		ChangedTokens(msg.sender,amountChanged);
-		
-	}
-	    	function receiveApproval(address _user,uint256,address,bytes) public
-	{
-	// Use this function (with approveAndCall from previous contract) to swap your old peculium against new ones (the new ones don't need defrost to be transfered)
-	// Old peculium are burned
-		require(peculOld.totalSupply()>0);
-		uint256 amountChanged = peculOld.allowance(_user,address(this));
-		require(amountChanged>0);
-		peculOld.transferFrom(_user,address(this),amountChanged);
-		peculOld.burn(amountChanged);
-
-		balances[address(this)] = balances[address(this)].sub(amountChanged);
-    		balances[_user] = balances[_user].add(amountChanged);
-		Transfer(address(this), _user, amountChanged);
-		ChangedTokens(_user,amountChanged);
 		
 	}
 
