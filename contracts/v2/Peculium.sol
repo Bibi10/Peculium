@@ -1,5 +1,5 @@
 /*
-This Token Contract implements the Peculium token (beta)
+This Token Contract implements the Peculium token (beta v2)
 .*/
 
 
@@ -11,10 +11,8 @@ pragma solidity ^0.4.15;
 contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 Token with burnable and ownable aptitude
 
 	/*Variables about the old token contract */	
-	PeculiumOld public peculOld; // The Peculium token
-	bool public initPeculOld; // boolean to know if the Peculium token address has been init
-	
-	event InitializedToken(address contractToken);
+	PeculiumOld public peculOld; // The old Peculium token
+	address public peculOldAdress = 0x53148Bb4551707edF51a1e8d7A93698d18931225; // The address of the old Peculium contract
 
 
 	using SafeMath for uint256; // We use safemath to do basic math operation (+,-,*,/)
@@ -40,15 +38,7 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 	function Peculium() public {
 		totalSupply = MAX_SUPPLY_NBTOKEN;
 		balances[address(this)] = totalSupply; // At the beginning, the contract has all the tokens. 
-	}
-	
-	function InitPeculiumOldAdress(address peculOldAdress) public onlyOwner
-	{ // We init the address of the token
-	
-		peculOld = PeculiumOld(peculOldAdress);
-		initPeculOld = true;
-		InitializedToken(peculOldAdress);
-	
+		peculOld = PeculiumOld(peculOldAdress);	
 	}
 	
 	/*** Public Functions of the contract ***/	
@@ -62,7 +52,7 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 	}
 	
 	function transferFrom(address _from, address _to, uint256 _value) public returns (bool) 
-	{ // We overright the transferFrom function to allow freeze possibility (need to allow before)
+	{ // We overright the transferFrom function to allow freeze possibility
 	
 		require(balancesCannotSell[msg.sender]==false);	
 		return StandardToken.transferFrom(_from,_to,_value);
@@ -81,6 +71,8 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
     	
     		function UpgradeTokens() public
 	{
+	// Use this function to swap your old peculium against new ones (the new ones don't need defrost to be transfered)
+	// Old peculium are burned
 		require(peculOld.totalSupply()>0);
 		uint256 amountChanged = peculOld.allowance(msg.sender,address(this));
 		require(amountChanged>0);
@@ -95,6 +87,8 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 	}
 	    	function receiveApproval(address _user,uint256,address,bytes) public
 	{
+	// Use this function (with approveAndCall from previous contract) to swap your old peculium against new ones (the new ones don't need defrost to be transfered)
+	// Old peculium are burned
 		require(peculOld.totalSupply()>0);
 		uint256 amountChanged = peculOld.allowance(_user,address(this));
 		require(amountChanged>0);
@@ -121,9 +115,7 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 
   	function getBlockTimestamp() public constant returns (uint256)
   	{
-        
         	return now;
-  	
   	}
 
   	function getOwnerInfos() public constant returns (address ownerAddr, uint256 ownerBalance)  
