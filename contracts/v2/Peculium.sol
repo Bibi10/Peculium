@@ -42,29 +42,33 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 		balances[address(this)] = totalSupply; // At the beginning, the contract has all the tokens. 
 	}
 	
-	function InitPeculiumOldAdress(address peculOldAdress) public onlyOwner 
+	function InitPeculiumOldAdress(address peculOldAdress) public onlyOwner returns (bool)
 	{ // We init the address of the token
 	
 		peculOld = PeculiumOld(peculOldAdress);
 		initPeculOld = true;
 		InitializedToken(peculOldAdress);
+		return true;
 	
 	}
 	
-	function receiveApproval(address,uint256,address,bytes) public
+	function receiveApproval(address,uint256,address,bytes) public returns (bool)
 	{
-		UpgradeTokens();
+		return UpgradeTokens();
 	}
 	
-	function UpgradeTokens() public
+	function UpgradeTokens() public returns (bool)
 	{
 		require(peculOld.totalSupply()>0);
 		uint256 amountChanged = peculOld.allowance(msg.sender,address(this));
 		require(amountChanged>0);
 		peculOld.transferFrom(msg.sender,address(this),amountChanged);
 		peculOld.burn(amountChanged);
-		transfer(msg.sender,amountChanged);
+		balances[address(this)] = balances[address(this)].sub(amountChanged);
+    		balances[msg.sender] = balances[msg.sender].add(amountChanged);
+		Transfer(address(this), msg.sender, amountChanged);
 		ChangedTokens(msg.sender,amountChanged);
+	        return true;
 		
 	}
 
@@ -88,11 +92,12 @@ contract Peculium is BurnableToken,Ownable { // Our token is a standard ERC20 To
 
 	/***  Owner Functions of the contract ***/	
 
-   	function ChangeLicense(address target, bool canSell) public onlyOwner 
+   	function ChangeLicense(address target, bool canSell) public onlyOwner returns (bool)
    	{
         
         	balancesCannotSell[target] = canSell;
         	FrozenFunds(target, canSell);
+        	return true;
     	
     	}
 
